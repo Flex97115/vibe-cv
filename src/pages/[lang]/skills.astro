@@ -1,0 +1,1031 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import cv from "../../data/cv.json";
+import skillsConfig from "../../data/skills-config.json";
+
+export function getStaticPaths() {
+    return [{ params: { lang: "fr" } }, { params: { lang: "en" } }];
+}
+
+const { lang } = Astro.params;
+const cvData = cv[lang as keyof typeof cv];
+
+// Helper to parse date (YYYY-MM)
+function parseDate(dateStr: string) {
+    if (!dateStr) return new Date();
+    const [year, month] = dateStr.split("-").map(Number);
+    return new Date(year, month - 1);
+}
+
+// Calculate duration in months
+function getDurationInMonths(start: string, end: string) {
+    const startDate = parseDate(start);
+    const endDate = end ? parseDate(end) : new Date();
+    return (
+        (endDate.getFullYear() - startDate.getFullYear()) * 12 +
+        (endDate.getMonth() - startDate.getMonth())
+    );
+}
+
+// Data Processing
+const nodes: any[] = [];
+const links: any[] = [];
+const skillDurations: Record<string, number> = {};
+// 1. Add Company/Project Nodes
+const workProjects = [...(cvData.work || []), ...(cvData.projects || [])];
+
+workProjects.forEach((item: any, index: number) => {
+    const duration = getDurationInMonths(item.startDate, item.endDate);
+    const uniqueId = `${item.name}-${index}`;
+
+    nodes.push({
+        id: uniqueId,
+        label: item.name,
+        group: 1, // Company/Project
+        radius: 25 + Math.log(duration + 1) * 2, // Size based on duration
+        type: "company",
+    });
+
+    if (item.technologies) {
+        item.technologies.forEach((tech: string) => {
+            // Handle Splits (e.g., Monitoring -> Sentry, Datadog)
+            let techList = [tech];
+            if (skillsConfig.splits[tech as keyof typeof skillsConfig.splits]) {
+                techList =
+                    skillsConfig.splits[
+                        tech as keyof typeof skillsConfig.splits
+                    ];
+            }
+
+            techList.forEach((tName) => {
+                // Aggregate duration
+                skillDurations[tName] = (skillDurations[tName] || 0) + duration;
+
+                // Create Link
+                links.push({
+                    source: uniqueId,
+                    target: tName,
+                    value: 1,
+                });
+            });
+        });
+    }
+});
+
+// 2. Add Skill Nodes (from aggregated data)
+Object.entries(skillDurations).forEach(([skillName, duration]) => {
+    const categoryKey =
+        skillsConfig.mappings[
+            skillName as keyof typeof skillsConfig.mappings
+        ] || "other";
+    const category =
+        skillsConfig.categories[
+            categoryKey as keyof typeof skillsConfig.categories
+        ];
+
+    nodes.push({
+        id: skillName,
+        group: 2, // Skill
+        radius: 10 + Math.log(duration + 1) * 3,
+        duration: duration,
+        category: categoryKey,
+        color: category.color,
+    });
+});
+
+// 3. Add Manual Skills
+skillsConfig.manualSkills.forEach((manualSkill) => {
+    const categoryKey = manualSkill.category || "other";
+    const category =
+        skillsConfig.categories[
+            categoryKey as keyof typeof skillsConfig.categories
+        ];
+
+    // Check if node already exists (from CV)
+    const existingNode = nodes.find((n) => n.id === manualSkill.name);
+
+    if (existingNode) {
+        // Update existing node if needed (e.g. add duration)
+        existingNode.duration += manualSkill.duration;
+        existingNode.radius = 10 + Math.log(existingNode.duration + 1) * 3;
+    } else {
+        // Create new node
+        nodes.push({
+            id: manualSkill.name,
+            group: 2,
+            radius: 10 + Math.log(manualSkill.duration + 1) * 3,
+            duration: manualSkill.duration,
+            category: categoryKey,
+            color: category.color,
+        });
+    }
+
+    // Link to manual nodes (e.g. Personal Projects) if specified
+    if (manualSkill.linkedTo) {
+        manualSkill.linkedTo.forEach((target) => {
+            // Ensure target node exists (create generic if not)
+            if (!nodes.find((n) => n.id === target)) {
+                nodes.push({
+                    id: target,
+                    group: 1,
+                    radius: 20,
+                    type: "manual-group",
+                });
+            }
+            links.push({
+                source: target,
+                target: manualSkill.name,
+                value: 1,
+            });
+        });
+    }
+});
+
+// Prepare sorted skills for initial render (Duration Descending)
+const sortedSkills = nodes
+    .filter((n) => n.group === 2)
+    .sort((a, b) => b.duration - a.duration);
+
+const graphData = { nodes, links };
+
+const texts = {
+    fr: {
+        back: "Retour au CV",
+        title: "Graphe des Compétences",
+        description:
+            "Ce graphe interactif visualise mon parcours professionnel. Les nœuds blancs représentent les entreprises et projets, tandis que les nœuds colorés représentent les compétences acquises par catégorie.",
+        sortDuration: "Trier par Durée",
+        sortName: "Trier par Nom",
+        months: "mois",
+        exp: "Expérience cumulée",
+        company: "Entreprise / Projet",
+    },
+    en: {
+        back: "Back to CV",
+        title: "Skills Graph",
+        description:
+            "This interactive graph visualizes my professional journey. White nodes represent companies and projects, while colored nodes represent acquired skills by category.",
+        sortDuration: "Sort by Duration",
+        sortName: "Trier par Nom",
+        months: "months",
+        exp: "Cumulative Experience",
+        company: "Company / Project",
+    },
+};
+
+const t = texts[lang as keyof typeof texts];
+---
+
+<Layout title={t.title} lang={lang}>
+    <main>
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <a href={`/${lang}`} class="back-link">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        style="margin-right: 6px;"
+                        ><path d="M19 12H5M12 19l-7-7 7-7"></path></svg
+                    >
+                    {t.back}
+                </a>
+                <h1>{t.title}</h1>
+            </div>
+
+            <p class="description">{t.description}</p>
+
+            <div class="controls">
+                <button id="sort-duration" class="active"
+                    >{t.sortDuration}</button
+                >
+                <button id="sort-name">{t.sortName}</button>
+            </div>
+
+            <ul class="skill-list" id="skill-list">
+                {
+                    sortedSkills.map((skill) => (
+                        <li
+                            data-id={skill.id}
+                            data-duration={skill.duration}
+                            data-category={skill.category}
+                        >
+                            <span class="skill-info">
+                                <span
+                                    class="skill-dot"
+                                    style={`background-color: ${skill.color}`}
+                                />
+                                <span class="skill-name">{skill.id}</span>
+                            </span>
+                            <span class="skill-duration">
+                                {skill.duration} {t.months}
+                            </span>
+                        </li>
+                    ))
+                }
+            </ul>
+        </div>
+
+        <div id="graph-container"></div>
+
+        <div id="legend">
+            {
+                Object.entries(skillsConfig.categories).map(([key, cat]) => (
+                    <div class="legend-item" data-category={key}>
+                        <span
+                            class="legend-dot"
+                            style={`background-color: ${cat.color}`}
+                        />
+                        <span class="legend-label">{cat.label}</span>
+                    </div>
+                ))
+            }
+        </div>
+
+        <div id="info-box" class="hidden">
+            <h3 id="info-title"></h3>
+            <p id="info-details"></p>
+        </div>
+
+        <div id="zoom-controls">
+            <button id="zoom-in" aria-label="Zoom In">+</button>
+            <div class="slider-wrapper">
+                <input
+                    type="range"
+                    id="zoom-slider"
+                    min="0.1"
+                    max="4"
+                    step="0.1"
+                    value="0.6"
+                />
+            </div>
+            <button id="zoom-out" aria-label="Zoom Out">-</button>
+        </div>
+    </main>
+</Layout>
+
+<script is:inline src="https://d3js.org/d3.v7.min.js"></script>
+<script
+    is:inline
+    define:vars={{ graphData, lang, t, skillsConfig, timestamp: Date.now() }}
+>
+    const container = document.getElementById("graph-container");
+
+    // Initial setup
+    const zoomSlider = d3.select("#zoom-slider");
+    const zoomInBtn = document.getElementById("zoom-in");
+    const zoomOutBtn = document.getElementById("zoom-out");
+
+    const zoom = d3
+        .zoom()
+        .scaleExtent([0.1, 4])
+        .on("zoom", (event) => {
+            g.attr("transform", event.transform);
+            zoomSlider.property("value", event.transform.k);
+        });
+
+    zoomSlider.on("input", function () {
+        svg.call(zoom.scaleTo, +this.value);
+    });
+
+    zoomInBtn.addEventListener("click", () => {
+        svg.transition().call(zoom.scaleBy, 1.2);
+    });
+
+    zoomOutBtn.addEventListener("click", () => {
+        svg.transition().call(zoom.scaleBy, 0.8);
+    });
+
+    const svg = d3
+        .select("#graph-container")
+        .append("svg")
+        .attr("width", "100%")
+        .attr("height", "100%")
+        .on("click", resetHighlight)
+        .call(zoom);
+
+    const g = svg.append("g");
+
+    const linkGroup = g.append("g").attr("class", "links");
+    const nodeGroup = g.append("g").attr("class", "nodes");
+    const labelGroup = g.append("g").attr("class", "labels");
+
+    let simulation;
+
+    function initGraph() {
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+
+        svg.attr("viewBox", [0, 0, width, height]);
+
+        // Simulation setup
+        simulation = d3
+            .forceSimulation(graphData.nodes)
+            .force(
+                "link",
+                d3
+                    .forceLink(graphData.links)
+                    .id((d) => d.id)
+                    .distance(100),
+            )
+            .force("charge", d3.forceManyBody().strength(-1000))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force(
+                "collide",
+                d3
+                    .forceCollide()
+                    .radius((d) => d.radius + 20)
+                    .iterations(2),
+            );
+
+        // Draw links
+        const link = linkGroup
+            .attr("stroke", "#999")
+            .attr("stroke-opacity", 0.6)
+            .selectAll("line")
+            .data(graphData.links)
+            .join("line")
+            .attr("stroke-width", (d) => Math.sqrt(d.value));
+
+        // Draw nodes
+        const node = nodeGroup
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 2)
+            .selectAll("circle")
+            .data(graphData.nodes)
+            .join("circle")
+            .attr("r", (d) =>
+                d.group === 1
+                    ? d.duration
+                        ? 10 + Math.log(d.duration + 1) * 1.5
+                        : 15
+                    : 10 + Math.log(d.duration + 1) * 3,
+            )
+            .attr("fill", (d) => (d.group === 1 ? "#ffffff" : d.color))
+            .attr("stroke", (d) => (d.group === 1 ? "#ff6b6b" : "#fff"))
+            .attr("cursor", "pointer")
+            .call(drag(simulation))
+            .on("click", (event, d) => {
+                event.stopPropagation();
+                highlightNode(d);
+            });
+
+        // Labels
+        const label = labelGroup
+            .selectAll("text")
+            .data(graphData.nodes)
+            .join("text")
+            .attr("dx", 15)
+            .attr("dy", ".35em")
+            .text((d) => d.label || d.id)
+            .style("font-size", "12px")
+            .style("font-family", "Inter, sans-serif")
+            .style("fill", "var(--color-text)")
+            .style("pointer-events", "none")
+            .style(
+                "text-shadow",
+                "0 1px 0 var(--color-bg), 1px 0 0 var(--color-bg), 0 -1px 0 var(--color-bg), -1px 0 0 var(--color-bg)",
+            );
+
+        simulation.on("tick", () => {
+            link.attr("x1", (d) => d.source.x)
+                .attr("y1", (d) => d.source.y)
+                .attr("x2", (d) => d.target.x)
+                .attr("y2", (d) => d.target.y);
+
+            node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+
+            label.attr("x", (d) => d.x).attr("y", (d) => d.y);
+        });
+
+        // Initial Zoom
+        const initialScale = 0.6;
+        const initialX = (width * (1 - initialScale)) / 2;
+        const initialY = (height * (1 - initialScale)) / 2;
+
+        svg.call(
+            zoom.transform,
+            d3.zoomIdentity.translate(initialX, initialY).scale(initialScale),
+        );
+    }
+
+    // Initialize
+    initGraph();
+
+    // Check for skill query param
+    const urlParams = new URLSearchParams(window.location.search);
+    const skillToHighlight = urlParams.get("skill");
+
+    if (skillToHighlight) {
+        // Wait a bit for simulation to settle or just highlight immediately
+        // Finding the node
+        const targetNode = graphData.nodes.find(
+            (n) => n.id === skillToHighlight,
+        );
+        if (targetNode) {
+            // Use a timeout to ensure graph is ready
+            setTimeout(() => {
+                highlightNode(targetNode);
+            }, 500);
+        }
+    }
+
+    // Resize Observer
+    const resizeObserver = new ResizeObserver(() => {
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+
+        svg.attr("viewBox", [0, 0, width, height]);
+
+        if (simulation) {
+            simulation.force("center", d3.forceCenter(width / 2, height / 2));
+            simulation.alpha(0.3).restart();
+        }
+    });
+
+    resizeObserver.observe(container);
+
+    // Neighbors map
+    const linkedByIndex = {};
+    graphData.links.forEach((d) => {
+        linkedByIndex[`${d.source.id || d.source},${d.target.id || d.target}`] =
+            1;
+        linkedByIndex[`${d.target.id || d.target},${d.source.id || d.source}`] =
+            1;
+    });
+
+    function isConnected(a, b) {
+        return (
+            linkedByIndex[`${a.id},${b.id}`] ||
+            linkedByIndex[`${b.id},${a.id}`] ||
+            a.id === b.id
+        );
+    }
+
+    // Interaction Logic
+    function highlightNode(d) {
+        const node = nodeGroup.selectAll("circle");
+        const link = linkGroup.selectAll("line");
+        const label = labelGroup.selectAll("text");
+
+        // Dim all
+        node.transition().duration(200).style("opacity", 0.1);
+        link.transition().duration(200).style("opacity", 0.05);
+        label.transition().duration(200).style("opacity", 0.1);
+
+        // Highlight connected
+        node.filter((n) => isConnected(d, n))
+            .transition()
+            .duration(200)
+            .style("opacity", 1);
+        link.filter((l) => l.source.id === d.id || l.target.id === d.id)
+            .transition()
+            .duration(200)
+            .style("opacity", 1);
+        label
+            .filter((n) => isConnected(d, n))
+            .transition()
+            .duration(200)
+            .style("opacity", 1);
+
+        // Update Info Box
+        const infoBox = document.getElementById("info-box");
+        const infoTitle = document.getElementById("info-title");
+        const infoDetails = document.getElementById("info-details");
+
+        infoBox.classList.remove("hidden");
+        infoTitle.textContent = d.label || d.id;
+
+        if (d.group === 2) {
+            // Skill
+            infoDetails.textContent = `${t.exp}: ${d.duration} ${t.months}`;
+            // Highlight in sidebar
+            document
+                .querySelectorAll(".skill-list li")
+                .forEach((li) => li.classList.remove("active"));
+            const listItem = document.querySelector(
+                `.skill-list li[data-id="${d.id}"]`,
+            );
+            if (listItem) {
+                listItem.classList.add("active");
+                listItem.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                });
+            }
+        } else {
+            // Company/Project
+            infoDetails.textContent = t.company;
+            document
+                .querySelectorAll(".skill-list li")
+                .forEach((li) => li.classList.remove("active"));
+        }
+    }
+
+    function highlightCategory(category) {
+        const node = nodeGroup.selectAll("circle");
+        const link = linkGroup.selectAll("line");
+        const label = labelGroup.selectAll("text");
+
+        // Dim all
+        node.transition().duration(200).style("opacity", 0.1);
+        link.transition().duration(200).style("opacity", 0.05);
+        label.transition().duration(200).style("opacity", 0.1);
+
+        // Highlight category nodes
+        node.filter((n) => n.category === category)
+            .transition()
+            .duration(200)
+            .style("opacity", 1);
+        label
+            .filter((n) => n.category === category)
+            .transition()
+            .duration(200)
+            .style("opacity", 1);
+
+        // Highlight links connected to category nodes
+        link.filter(
+            (l) =>
+                l.target.category === category ||
+                l.source.category === category,
+        )
+            .transition()
+            .duration(200)
+            .style("opacity", 0.4);
+
+        document.getElementById("info-box").classList.add("hidden");
+    }
+
+    function resetHighlight() {
+        const node = nodeGroup.selectAll("circle");
+        const link = linkGroup.selectAll("line");
+        const label = labelGroup.selectAll("text");
+
+        node.transition().duration(200).style("opacity", 1);
+        link.transition().duration(200).style("opacity", 0.6);
+        label.transition().duration(200).style("opacity", 1);
+        document.getElementById("info-box").classList.add("hidden");
+        document
+            .querySelectorAll(".skill-list li")
+            .forEach((li) => li.classList.remove("active"));
+        document
+            .querySelectorAll(".legend-item")
+            .forEach((item) => item.classList.remove("active"));
+    }
+
+    // Sidebar Logic
+    const skillList = document.getElementById("skill-list");
+    const sortDurationBtn = document.getElementById("sort-duration");
+    const sortNameBtn = document.getElementById("sort-name");
+
+    // Click handler for list items
+    skillList.addEventListener("click", (e) => {
+        const li = e.target.closest("li");
+        if (li) {
+            const skillId = li.getAttribute("data-id");
+            const nodeData = graphData.nodes.find((n) => n.id === skillId);
+            if (nodeData) {
+                highlightNode(nodeData);
+            }
+        }
+    });
+
+    // Sort handlers
+    sortDurationBtn.addEventListener("click", () => {
+        sortList("duration");
+        sortDurationBtn.classList.add("active");
+        sortNameBtn.classList.remove("active");
+    });
+
+    sortNameBtn.addEventListener("click", () => {
+        sortList("name");
+        sortNameBtn.classList.add("active");
+        sortDurationBtn.classList.remove("active");
+    });
+
+    function sortList(criteria) {
+        const items = Array.from(skillList.children);
+        items.sort((a, b) => {
+            if (criteria === "duration") {
+                return (
+                    parseInt(b.getAttribute("data-duration")) -
+                    parseInt(a.getAttribute("data-duration"))
+                );
+            } else {
+                return a
+                    .getAttribute("data-id")
+                    .localeCompare(b.getAttribute("data-id"));
+            }
+        });
+        skillList.innerHTML = "";
+        items.forEach((item) => skillList.appendChild(item));
+    }
+
+    // Legend Logic
+    const legendItems = document.querySelectorAll(".legend-item");
+    legendItems.forEach((item) => {
+        item.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const category = item.getAttribute("data-category");
+
+            // Toggle active state
+            const isActive = item.classList.contains("active");
+            legendItems.forEach((i) => i.classList.remove("active"));
+
+            if (!isActive) {
+                item.classList.add("active");
+                highlightCategory(category);
+            } else {
+                resetHighlight();
+            }
+        });
+    });
+
+    // Drag functions
+    function drag(simulation) {
+        function dragstarted(event) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            event.subject.fx = event.subject.x;
+            event.subject.fy = event.subject.y;
+        }
+
+        function dragged(event) {
+            event.subject.fx = event.x;
+            event.subject.fy = event.y;
+        }
+
+        function dragended(event) {
+            if (!event.active) simulation.alphaTarget(0);
+            event.subject.fx = null;
+            event.subject.fy = null;
+        }
+
+        return d3
+            .drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended);
+    }
+</script>
+
+<style>
+    main {
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: row;
+        position: relative;
+        background: var(--color-bg);
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+        width: 320px;
+        background: var(--color-card-bg);
+        border-right: 1px solid var(--color-border);
+        display: flex;
+        flex-direction: column;
+        padding: 2rem;
+        box-sizing: border-box;
+        z-index: 20;
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
+        flex-shrink: 0;
+    }
+
+    .sidebar-header {
+        margin-bottom: 2rem;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        color: var(--color-text-muted);
+        text-decoration: none;
+        font-weight: 500;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        transition: color 0.2s;
+    }
+
+    .back-link:hover {
+        color: var(--color-primary);
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        line-height: 1.2;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    .description {
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+
+    /* Controls */
+    .controls {
+        display: flex;
+        background: var(--color-bg);
+        padding: 0.25rem;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--color-border);
+        margin-bottom: 1.5rem;
+    }
+
+    .controls button {
+        flex: 1;
+        padding: 0.5rem;
+        border: none;
+        background: transparent;
+        color: var(--color-text-muted);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-size: 0.8rem;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .controls button:hover {
+        color: var(--color-text);
+    }
+
+    .controls button.active {
+        background: var(--color-card-bg);
+        color: var(--color-primary);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Skill List */
+    .skill-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        overflow-y: auto;
+        flex: 1;
+        /* Custom Scrollbar */
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-border) transparent;
+    }
+
+    .skill-list::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .skill-list::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .skill-list::-webkit-scrollbar-thumb {
+        background-color: var(--color-border);
+        border-radius: 4px;
+    }
+
+    .skill-list li {
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.5rem;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+    }
+
+    .skill-list li:hover {
+        background-color: var(--color-bg);
+        border-color: var(--color-border);
+    }
+
+    .skill-list li.active {
+        background-color: var(--color-bg);
+        border-color: var(--color-primary);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .skill-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .skill-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .skill-name {
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+    .skill-duration {
+        font-size: 0.8rem;
+        color: var(--color-text-muted);
+        background: var(--color-bg);
+        padding: 0.2rem 0.5rem;
+        border-radius: 12px;
+    }
+
+    .skill-list li.active .skill-duration {
+        background: var(--color-card-bg);
+        color: var(--color-primary);
+    }
+
+    /* Graph Container */
+    #graph-container {
+        flex-grow: 1;
+        height: 100%;
+        background: var(--color-bg);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Legend */
+    #legend {
+        position: absolute;
+        bottom: 2rem;
+        left: calc(320px + 2rem);
+        background: var(--color-card-bg);
+        padding: 0.75rem 1rem;
+        border-radius: 50px;
+        border: 1px solid var(--color-border);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.25rem;
+        z-index: 30;
+        backdrop-filter: blur(8px);
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        padding: 0.25rem 0.5rem;
+        border-radius: 20px;
+        transition: all 0.2s;
+        opacity: 0.8;
+    }
+
+    .legend-item:hover {
+        opacity: 1;
+        background-color: var(--color-bg);
+    }
+
+    .legend-item.active {
+        opacity: 1;
+        background-color: var(--color-bg);
+        box-shadow: 0 0 0 1px var(--color-border);
+    }
+
+    .legend-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+    }
+
+    .legend-label {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--color-text);
+    }
+
+    /* Info Box */
+    #info-box {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        bottom: auto;
+        background: var(--color-card-bg);
+        padding: 1.5rem;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--color-border);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        min-width: 280px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        z-index: 30;
+        transform: translateY(0);
+    }
+
+    #info-box.hidden {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    #info-title {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--color-text);
+    }
+
+    #info-details {
+        margin: 0;
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+    }
+
+    /* Zoom Controls */
+    #zoom-controls {
+        position: absolute;
+        bottom: 8rem;
+        right: 2rem;
+        background: var(--color-card-bg);
+        padding: 0.5rem 0.25rem;
+        border-radius: 50px;
+        border: 1px solid var(--color-border);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        z-index: 30;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        backdrop-filter: blur(8px);
+    }
+
+    #zoom-controls button {
+        background: transparent;
+        border: none;
+        color: var(--color-text);
+        font-size: 1.2rem;
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background-color 0.2s;
+    }
+
+    #zoom-controls button:hover {
+        background-color: var(--color-bg);
+    }
+
+    .slider-wrapper {
+        height: 100px;
+        width: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #zoom-slider {
+        -webkit-appearance: none;
+        width: 100px; /* Height of the vertical slider */
+        height: 4px;
+        background: var(--color-border);
+        border-radius: 2px;
+        outline: none;
+        transform: rotate(-90deg);
+        cursor: pointer;
+    }
+
+    #zoom-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--color-primary);
+        cursor: pointer;
+        box-shadow: 0 0 0 2px var(--color-card-bg);
+        transition: transform 0.1s;
+    }
+
+    #zoom-slider::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+    }
+
+    #zoom-slider::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--color-primary);
+        cursor: pointer;
+        border: 2px solid var(--color-card-bg);
+        transition: transform 0.1s;
+    }
+
+    #zoom-slider::-moz-range-thumb:hover {
+        transform: scale(1.2);
+    }
+</style>
+```

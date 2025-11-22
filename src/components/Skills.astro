@@ -1,0 +1,59 @@
+---
+import Section from "./Section.astro";
+
+interface Props {
+  skills: any[];
+  title: string;
+  lang: string;
+}
+
+const { skills, title, lang } = Astro.props;
+---
+
+<Section title={title}>
+  <div class="skills-grid">
+    {
+      skills.map((skill) => (
+        <a href={`/${lang}/skills?skill=${skill.name}`} class="skill-item">
+          <span class="name">{skill.name}</span>
+        </a>
+      ))
+    }
+  </div>
+</Section>
+
+<style>
+  .skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+
+  .skill-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .skill-item:hover {
+    border-color: var(--color-primary);
+    background: rgba(56, 189, 248, 0.1);
+  }
+
+  .name {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  @media print {
+    .skill-item {
+      background: transparent;
+      border: 1px solid var(--color-border);
+      color: var(--color-text);
+    }
+  }
+</style>

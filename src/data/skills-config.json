@@ -1,0 +1,90 @@
+{
+    "categories": {
+        "language": {
+            "label": "Languages",
+            "color": "#3b82f6"
+        },
+        "frontend": {
+            "label": "Frontend",
+            "color": "#10b981"
+        },
+        "backend": {
+            "label": "Backend & Architecture",
+            "color": "#8b5cf6"
+        },
+        "data": {
+            "label": "Data",
+            "color": "#f59e0b"
+        },
+        "devops": {
+            "label": "DevOps & Cloud",
+            "color": "#6366f1"
+        },
+        "tool": {
+            "label": "Tools",
+            "color": "#ec4899"
+        },
+        "database": {
+            "label": "Databases",
+            "color": "#ea580c"
+        },
+        "ai": {
+            "label": "IA",
+            "color": "#06b6d4"
+        },
+        "other": {
+            "label": "Other",
+            "color": "#9ca3af"
+        }
+    },
+    "mappings": {
+        "Java": "language",
+        "Python": "language",
+        "TypeScript": "language",
+        "JavaScript": "language",
+        "ReactJS": "frontend",
+        "Astro": "frontend",
+        "HTML": "frontend",
+        "CSS": "frontend",
+        "API REST": "backend",
+        "OpenAPI": "backend",
+        "Clean Architecture": "backend",
+        "Api First": "backend",
+        "Speech-to-Speech": "ai",
+        "AI": "ai",
+        "AI-assisted dev": "ai",
+        "PostgreSQL": "database",
+        "Kafka": "database",
+        "MongoDB": "database",
+        "Airflow": "data",
+        "DBT": "data",
+        "AWS": "devops",
+        "Terraform": "devops",
+        "Docker": "devops",
+        "CI/CD": "devops",
+        "DevOps": "devops",
+        "Sentry": "tool",
+        "Datadog": "tool",
+        "New Relic": "tool",
+        "Stratégie d'entreprise": "other",
+        "Business Strategy": "other",
+        "Management": "other",
+        "Scaleway": "devops",
+        "Azure": "devops",
+        "Django": "backend",
+        "NodeJS": "backend",
+        "MQTT": "backend",
+        "Grafana": "tool",
+        "AI-Assisted Dev": "ai",
+        "IoT": "other",
+        "Scrum": "other",
+        "Apache Parquet": "database",
+        "Metabase": "data",
+        "Hotjar": "tool",
+        "Heap": "tool",
+        "Terragrunt": "tool",
+        "Kubernetes": "devops"
+    },
+    "splits": {},
+    "manualSkills": []
+}

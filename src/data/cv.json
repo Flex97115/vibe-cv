@@ -1,0 +1,480 @@
+{
+  "fr": {
+    "basics": {
+      "name": "Géry Thrasibule",
+      "label": "CTO - Head/VP of Engineering",
+      "image": "/profile.jpg",
+      "email": "gery@thrasibule.mx",
+      "phone": "+33 6 12 87 22 84",
+      "url": "https://linktr.ee/gery_thrasibule",
+      "summary": "I Fix, Refactor & Scale Complex Tech Stacks",
+      "location": {
+        "address": "91 avenue de lombez",
+        "postalCode": "31300",
+        "city": "Toulouse",
+        "countryCode": "FR"
+      },
+      "profiles": [
+        {
+          "network": "Linktree",
+          "username": "gery_thrasibule",
+          "url": "https://linktr.ee/gery_thrasibule"
+        }
+      ]
+    },
+    "work": [
+      {
+        "name": "Kocliko",
+        "position": "VP of Engineering",
+        "url": "https://www.kocliko.co",
+        "logo": "https://logo.clearbit.com/kocliko.co",
+        "startDate": "2024-11",
+        "endDate": "",
+        "summary": "En tant que VP of Engineering, j'ai dirigé la restructuration de l'architecture data et backend de Kocliko tout en guidant l'équipe vers des standards d'ingénierie plus élevés.",
+        "highlights": [
+          "Refonte complète du pipeline de données traitant des millions de points par jour, réduisant le temps d'exécution de 6 heures à 40 minutes.",
+          "Construction d'un pipeline d'ingestion d'événements MQTT en temps réel avec gestion des données chaudes/froides pour le plus grand partenariat de Kocliko.",
+          "Migration de toute l'infrastructure d'AWS vers Scaleway, implémentant une stack Terraform modulaire alignée avec la stratégie cloud de l'entreprise.",
+          "Création de modules certifiables pour la sécurité afin d'isoler le code audité et garantir l'intégrité à travers les versions certifiées.",
+          "Déploiement de pipelines CI/CD complets avec tests automatisés, vérifications de sécurité et revues de code assistées par IA.",
+          "Mentorat de l'équipe sur le développement assisté par IA, l'architecture logicielle, l'Infrastructure-as-Code et le GitFlow.",
+          "Amélioration de la fiabilité de la plateforme avec monitoring Grafana, alertes Sentry et renforcement de la sécurité."
+        ],
+        "technologies": [
+          "Python",
+          "Terraform",
+          "Scaleway",
+          "AWS",
+          "MQTT",
+          "CI/CD",
+          "Grafana",
+          "Sentry",
+          "AI-Assisted Dev",
+          "MongoDB",
+          "IoT",
+          "Kubernetes",
+          "Apache Parquet",
+          "Terragrunt",
+          "Metabase"
+        ]
+      },
+      {
+        "name": "MerciYanis",
+        "position": "Head Of Engineering",
+        "url": "https://www.merciyanis.com",
+        "logo": "https://logo.clearbit.com/merciyanis.com",
+        "startDate": "2024-03",
+        "endDate": "2024-10",
+        "summary": "En tant que Head of Engineering, ma mission était de moderniser la stack technique de MerciYanis et d'éliminer les goulots d'étranglement de productivité.",
+        "highlights": [
+          "Architecture Serverless Scalable : Construction d'une architecture serverless sur Azure pour gérer plus de 500 000 événements générés par les dispositifs de Protection du Travailleur Isolé.",
+          "Migration d'infrastructure sans couture : Migration de l’infrastructure bare-metal d’OVH vers un modèle PaaS, en migrant plus de 400 bases de données.",
+          "Continuité des données : Mise en place d'une Event Gateway pour assurer la continuité des données pendant les temps d'arrêt.",
+          "Amélioration du monitoring et documentation : Mise en place de monitoring avec New Relic et Sentry, documentation de l’architecture avec Terraform, et optimisation des pipelines de données avec Apache Airflow.",
+          "CI/CD et DX : Création d'un pipeline CI/CD pour le déploiement PaaS automatique, enrichissement de l'environnement de développement avec des données simulées.",
+          "Management : Collaboration étroite avec le CTO pour identifier et résoudre les goulots d'étranglement techniques et managériaux.",
+          "Sécurité : Renforcement de la posture de sécurité, permettant à MerciYanis de passer avec succès plusieurs audits de sécurité."
+        ],
+        "technologies": [
+          "AWS",
+          "Azure",
+          "IoT",
+          "Terraform",
+          "Docker",
+          "Django",
+          "Python",
+          "NodeJS",
+          "ReactJS",
+          "PostgreSQL",
+          "Airflow",
+          "Sentry",
+          "New Relic",
+          "CI/CD",
+          "DevOps",
+          "Scrum",
+          "Terragrunt",
+          "Metabase"
+        ]
+      },
+      {
+        "name": "Le Comptoir Des Pharmacies",
+        "position": "Board Member",
+        "url": "https://www.lecomptoirdespharmacies.fr",
+        "logo": "https://logo.clearbit.com/lecomptoirdespharmacies.fr",
+        "startDate": "2023-01",
+        "endDate": "",
+        "summary": "Membre du conseil stratégique, j'apporte mon expertise technique et business pour guider les décisions majeures de l'entreprise.",
+        "highlights": [],
+        "technologies": [
+          "Stratégie d'entreprise"
+        ]
+      },
+      {
+        "name": "Le Comptoir Des Pharmacies",
+        "position": "Chief Technical Officer - Associé",
+        "url": "https://www.lecomptoirdespharmacies.fr",
+        "logo": "https://logo.clearbit.com/lecomptoirdespharmacies.fr",
+        "startDate": "2016-01",
+        "endDate": "2024-01",
+        "summary": "En qualité de CTO hands-on et associé, j'ai dirigé le développement technique de l'entreprise, la propulsant depuis ses débuts jusqu'à sa position de leader réunissant plus de la moitié des pharmacies françaises en seulement 8 ans.",
+        "highlights": [
+          "Conception et déploiement d'une stratégie d'entreprise stimulant la croissance continue.",
+          "Gestion proactive des départements Data, Développement et Produit pour optimiser les performances.",
+          "Supervision complète de la migration depuis Heroku vers le cloud AWS.",
+          "Migration réussie d'un monolithe vers une architecture orientée services (SOA), permettant d'accueillir 10 fois plus de clients.",
+          "Conception d'une architecture data innovante, ayant permis une augmentation significative de plus de 15 % du chiffre d'affaires.",
+          "Implication totale dans tous les aspects techniques du développement (Front-end, Back-end, DevOps...).",
+          "Instauration d'un design système améliorant la collaboration avec les équipes d’UI/UX et de communication."
+        ],
+        "technologies": [
+          "AWS",
+          "Terraform",
+          "Docker",
+          "API REST",
+          "OpenAPI",
+          "Java",
+          "Python",
+          "ReactJS",
+          "Kafka",
+          "PostgreSQL",
+          "Airflow",
+          "DBT",
+          "Sentry",
+          "Datadog",
+          "CI/CD",
+          "DevOps",
+          "Clean Architecture",
+          "Api First",
+          "MongoDB",
+          "Stratégie d'entreprise",
+          "Management",
+          "Scrum",
+          "Apache Parquet",
+          "Metabase",
+          "Hotjar",
+          "Heap"
+        ]
+      }
+    ],
+    "education": [
+      {
+        "institution": "AWS",
+        "area": "AWS Certified Developer – Associate",
+        "studyType": "Certification",
+        "startDate": "2023",
+        "endDate": "2023"
+      },
+      {
+        "institution": "Supinfo",
+        "area": "Ingénieur informatique",
+        "studyType": "Master 2",
+        "startDate": "2018",
+        "endDate": "2018"
+      }
+    ],
+    "skills": [
+      {
+        "name": "Développement full-stack",
+        "keywords": []
+      },
+      {
+        "name": "Architecture cloud",
+        "keywords": []
+      },
+      {
+        "name": "Architecture data",
+        "keywords": []
+      },
+      {
+        "name": "Management",
+        "keywords": []
+      },
+      {
+        "name": "Entrepreunariat",
+        "keywords": []
+      }
+    ],
+    "languages": [
+      {
+        "language": "Français",
+        "fluency": "Langue maternelle"
+      },
+      {
+        "language": "Anglais",
+        "fluency": "Courant"
+      }
+    ],
+    "interests": [
+      {
+        "name": "Moto",
+        "keywords": []
+      },
+      {
+        "name": "Football",
+        "keywords": []
+      },
+      {
+        "name": "Cuisine",
+        "keywords": []
+      }
+    ],
+    "projects": [
+      {
+        "name": "Secondo Voice",
+        "description": "Révolutionnez vos interviews avec l'IA. Laissez Jany, notre IA multilingue, mener vos interviews 24/7 dans plus de 50 langues.",
+        "url": "https://secondovoice.io/fr/",
+        "logo": "https://secondovoice.io/logo-sans-fond-sans-texte.svg",
+        "startDate": "2024-01",
+        "endDate": "2024-04",
+        "repository": "https://github.com/Flex97115/secondovoice",
+        "technologies": [
+          "TypeScript",
+          "Python",
+          "Astro",
+          "AI",
+          "Speech-to-Speech",
+          "ReactJS"
+        ]
+      }
+    ]
+  },
+  "en": {
+    "basics": {
+      "name": "Géry Thrasibule",
+      "label": "CTO - Head/VP of Engineering",
+      "image": "/profile.jpg",
+      "email": "gery@thrasibule.mx",
+      "phone": "+33 6 12 87 22 84",
+      "url": "https://linktr.ee/gery_thrasibule",
+      "summary": "I Fix, Refactor & Scale Complex Tech Stacks",
+      "location": {
+        "address": "91 avenue de lombez",
+        "postalCode": "31300",
+        "city": "Toulouse",
+        "countryCode": "FR"
+      },
+      "profiles": [
+        {
+          "network": "Linktree",
+          "username": "gery_thrasibule",
+          "url": "https://linktr.ee/gery_thrasibule"
+        }
+      ]
+    },
+    "work": [
+      {
+        "name": "Kocliko",
+        "position": "VP of Engineering",
+        "url": "https://www.kocliko.co",
+        "logo": "https://logo.clearbit.com/kocliko.co",
+        "startDate": "2024-11",
+        "endDate": "",
+        "summary": "As VP of Engineering, I led the restructuring of Kocliko’s data and backend architecture while guiding the team toward higher engineering standards.",
+        "highlights": [
+          "Fully redesigned the data pipeline processing millions of data points per day, reducing execution time from 6 hours to 40 minutes.",
+          "Built a real-time MQTT event ingestion pipeline with hot/cold data management for Kocliko’s largest partnership.",
+          "Migrated the entire infrastructure from AWS to Scaleway, implementing a modular Terraform stack aligned with the company’s cloud strategy.",
+          "Created security-certifiable modules to isolate audited code and guarantee integrity across certified releases.",
+          "Deployed full CI/CD pipelines with automated testing, security checks, and AI-assisted code reviews.",
+          "Mentored the team on AI-assisted development, software architecture, Infrastructure-as-Code, and GitFlow.",
+          "Improved platform reliability with Grafana monitoring, Sentry alerting, and strengthened security."
+        ],
+        "technologies": [
+          "Python",
+          "Terraform",
+          "Scaleway",
+          "AWS",
+          "MQTT",
+          "CI/CD",
+          "Grafana",
+          "Sentry",
+          "AI-Assisted Dev",
+          "MongoDB",
+          "IoT",
+          "Kubernetes",
+          "Apache Parquet",
+          "Terragrunt",
+          "Metabase"
+        ]
+      },
+      {
+        "name": "MerciYanis",
+        "position": "Head Of Engineering",
+        "url": "https://www.merciyanis.com",
+        "logo": "https://logo.clearbit.com/merciyanis.com",
+        "startDate": "2024-03",
+        "endDate": "2024-10",
+        "summary": "As Head of Engineering, my mission was to modernize the MerciYanis tech stack and eliminate productivity bottlenecks.",
+        "highlights": [
+          "Scalable Serverless Architecture: Built a serverless architecture on Azure to handle over 500,000 events generated by Lone Worker Protection devices.",
+          "Seamless Infrastructure Migration: From OVH bare-metal infrastructure to a PaaS model, migrating over 400 databases.",
+          "Data Continuity: Ensured Data Continuity During Downtime by Implementing an Event Gateway.",
+          "Enhanced Monitoring and Documentation: Set up robust monitoring with New Relic and Sentry, documented architecture using Terraform, and optimized data pipelines by implementing Apache Airflow.",
+          "CI/CD & DX: Created a CI/CD pipeline for automatic PaaS deployment, enriched the developer environment with simulated data, and streamlined setup for new developers.",
+          "Management: Worked closely with the CTO to identify and resolve both technical and managerial bottlenecks.",
+          "Security: Strengthened the security posture across services, enabling MerciYanis to successfully pass multiple security assessments."
+        ],
+        "technologies": [
+          "AWS",
+          "Azure",
+          "IoT",
+          "Terraform",
+          "Docker",
+          "Django",
+          "Python",
+          "NodeJS",
+          "ReactJS",
+          "PostgreSQL",
+          "Airflow",
+          "Sentry",
+          "New Relic",
+          "CI/CD",
+          "DevOps",
+          "Scrum",
+          "Terragrunt",
+          "Metabase"
+        ]
+      },
+      {
+        "name": "Le Comptoir Des Pharmacies",
+        "position": "Board Member",
+        "url": "https://www.lecomptoirdespharmacies.fr",
+        "logo": "https://logo.clearbit.com/lecomptoirdespharmacies.fr",
+        "startDate": "2024-01",
+        "endDate": "",
+        "summary": "As a strategic board member, I provide technical and business expertise to guide the company's major decisions.",
+        "highlights": [],
+        "technologies": [
+          "Business Strategy"
+        ]
+      },
+      {
+        "name": "Le Comptoir Des Pharmacies",
+        "position": "Chief Technical Officer - Associate",
+        "url": "https://www.lecomptoirdespharmacies.fr",
+        "logo": "https://logo.clearbit.com/lecomptoirdespharmacies.fr",
+        "startDate": "2016-01",
+        "endDate": "2024-01",
+        "summary": "In the role of hands-on CTO and partner, I led the technical development of the company, propelling it from its inception to becoming a leader covering over half of the French pharmacies in just 8 years.",
+        "highlights": [
+          "Business Strategy: Led the design and execution of a growth-driven strategy.",
+          "Departmental Management: Proactively managed Data, Development, and Product departments.",
+          "AWS Cloud Migration: Oversaw comprehensive migration, enhancing flexibility and scalability.",
+          "SOA Migration: Successfully transitioned from a monolith to a service-oriented architecture, accommodating a tenfold increase in clients.",
+          "Innovative Data Architecture: Designed an architecture resulting in a revenue increase of over 15%, fostering data-driven methodologies.",
+          "Technical Involvement: Oversaw all technical aspects, ensuring effective collaboration and code quality.",
+          "System Design for Collaboration: Instituted a design to enhance collaboration with UI/UX and communication teams."
+        ],
+        "technologies": [
+          "AWS",
+          "Terraform",
+          "Docker",
+          "API REST",
+          "OpenAPI",
+          "Java",
+          "Python",
+          "ReactJS",
+          "Kafka",
+          "PostgreSQL",
+          "Airflow",
+          "DBT",
+          "Sentry",
+          "Datadog",
+          "CI/CD",
+          "DevOps",
+          "Clean Architecture",
+          "Api First",
+          "MongoDB",
+          "Business Strategy",
+          "Management",
+          "Scrum",
+          "Apache Parquet",
+          "Metabase",
+          "Hotjar",
+          "Heap"
+        ]
+      }
+    ],
+    "education": [
+      {
+        "institution": "AWS",
+        "area": "AWS Certified Developer – Associate",
+        "studyType": "Certification",
+        "startDate": "2023",
+        "endDate": "2023"
+      },
+      {
+        "institution": "Supinfo",
+        "area": "Software Engineer",
+        "studyType": "Master 2",
+        "startDate": "2018",
+        "endDate": "2018"
+      }
+    ],
+    "skills": [
+      {
+        "name": "Full-stack Development",
+        "keywords": []
+      },
+      {
+        "name": "Cloud Architecture",
+        "keywords": []
+      },
+      {
+        "name": "Data Architecture",
+        "keywords": []
+      },
+      {
+        "name": "Management",
+        "keywords": []
+      },
+      {
+        "name": "Entrepreneurship",
+        "keywords": []
+      }
+    ],
+    "languages": [
+      {
+        "language": "French",
+        "fluency": "Native Language"
+      },
+      {
+        "language": "English",
+        "fluency": "Fluent"
+      }
+    ],
+    "interests": [
+      {
+        "name": "Motorcycling",
+        "keywords": []
+      },
+      {
+        "name": "Football",
+        "keywords": []
+      },
+      {
+        "name": "Cooking",
+        "keywords": []
+      }
+    ],
+    "projects": [
+      {
+        "name": "Secondo Voice",
+        "description": "Revolutionize your interviews with AI. Let Jany, our multilingual AI, conduct your interviews 24/7 in over 50 languages.",
+        "url": "https://secondovoice.io/fr/",
+        "logo": "https://secondovoice.io/logo-sans-fond-sans-texte.svg",
+        "startDate": "2024-01",
+        "endDate": "2024-04",
+        "repository": "https://github.com/Flex97115/secondovoice",
+        "technologies": [
+          "TypeScript",
+          "Python",
+          "Astro",
+          "AI",
+          "Speech-to-Speech",
+          "ReactJS"
+        ]
+      }
+    ]
+  }
+}

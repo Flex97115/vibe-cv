@@ -1,0 +1,70 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Basics from "../../components/Basics.astro";
+import Experience from "../../components/Experience.astro";
+import Education from "../../components/Education.astro";
+import Skills from "../../components/Skills.astro";
+import Languages from "../../components/Languages.astro";
+import Interests from "../../components/Interests.astro";
+import Projects from "../../components/Projects.astro";
+import cvData from "../../data/cv.json";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "fr" } }, { params: { lang: "en" } }];
+}
+
+const { lang } = Astro.params;
+const data = cvData[lang as keyof typeof cvData];
+
+const labels = {
+  fr: {
+    experience: "Expérience",
+    projects: "Projets",
+    education: "Formation",
+    skills: "Compétences",
+    languages: "Langues",
+    interests: "Loisirs",
+    title: `CV - ${data.basics.name}`,
+  },
+  en: {
+    experience: "Experience",
+    projects: "Projects",
+    education: "Education",
+    skills: "Skills",
+    languages: "Languages",
+    interests: "Interests",
+    title: `CV - ${data.basics.name}`,
+  },
+};
+
+const t = labels[lang as keyof typeof labels];
+---
+
+<Layout title={t.title} lang={lang}>
+  <Header lang={lang} />
+  <main>
+    <Basics basics={data.basics} />
+    <Experience work={data.work} title={t.experience} lang={lang} />
+    <Projects projects={data.projects} title={t.projects} lang={lang} />
+    <Education education={data.education} title={t.education} />
+    <Skills skills={data.skills} title={t.skills} lang={lang} />
+    <Languages languages={data.languages} title={t.languages} />
+    <Interests interests={data.interests} title={t.interests} />
+  </main>
+</Layout>
+
+<style>
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+
+  @media print {
+    main {
+      padding: 0;
+      max-width: none;
+    }
+  }
+</style>
