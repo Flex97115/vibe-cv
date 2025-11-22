@@ -4,13 +4,17 @@ interface Props {
 }
 
 const { basics } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const imagePath = basics.image?.startsWith("http")
+  ? basics.image
+  : `${base}${basics.image?.replace(/^\//, "")}`;
 ---
 
 <div class="basics">
   {
     basics.image && (
       <div class="image-container">
-        <img src={basics.image} alt={basics.name} class="profile-image" />
+        <img src={imagePath} alt={basics.name} class="profile-image" />
       </div>
     )
   }
