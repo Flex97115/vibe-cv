@@ -4,10 +4,12 @@ interface Props {
 }
 
 const { basics } = Astro.props;
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.replace(/\/$/, ""); // Remove trailing slash
 const imagePath = basics.image?.startsWith("http")
   ? basics.image
-  : `${base}${basics.image?.replace(/^\//, "")}`;
+  : `${base}${basics.image}`;
+---
+
 ---
 
 <div class="basics">
