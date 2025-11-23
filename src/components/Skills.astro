@@ -8,13 +8,17 @@ interface Props {
 }
 
 const { skills, title, lang } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
 <Section title={title}>
   <div class="skills-grid">
     {
       skills.map((skill) => (
-        <a href={`/${lang}/skills?skill=${skill.name}`} class="skill-item">
+        <a
+          href={`${base}/${lang}/skills?skill=${skill.name}`}
+          class="skill-item"
+        >
           <span class="name">{skill.name}</span>
         </a>
       ))
