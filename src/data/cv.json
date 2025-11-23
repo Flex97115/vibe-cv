@@ -6,7 +6,7 @@
       "image": "/profile.jpg",
       "email": "gery@thrasibule.mx",
       "phone": "+33 6 12 87 22 84",
-      "url": "https://linktr.ee/gery_thrasibule",
+      "url": "",
       "summary": "I Fix, Refactor & Scale Complex Tech Stacks",
       "location": {
         "address": "91 avenue de lombez",
@@ -16,9 +16,19 @@
       },
       "profiles": [
         {
-          "network": "Linktree",
-          "username": "gery_thrasibule",
-          "url": "https://linktr.ee/gery_thrasibule"
+          "network": "LinkedIn",
+          "username": "Géry Thrasibule",
+          "url": "https://www.linkedin.com/in/g%C3%A9ry-thrasibule-98ab09a7/"
+        },
+        {
+          "network": "GitHub",
+          "username": "Flex97115",
+          "url": "https://github.com/Flex97115"
+        },
+        {
+          "network": "Medium",
+          "username": "@gryquandtestomb",
+          "url": "https://medium.com/@gryquandtestomb"
         }
       ]
     },
@@ -112,7 +122,7 @@
       },
       {
         "name": "Le Comptoir Des Pharmacies",
-        "position": "Chief Technical Officer - Associé",
+        "position": "Chief Technical Officer - Late founder",
         "url": "https://www.lecomptoirdespharmacies.fr",
         "logo": "https://logo.clearbit.com/lecomptoirdespharmacies.fr",
         "startDate": "2016-01",
@@ -239,7 +249,8 @@
           "ReactJS",
           "Deepgram",
           "Livekit",
-          "OpenAI"
+          "OpenAI",
+          "AI-Assisted Dev"
         ]
       },
       {
@@ -264,7 +275,7 @@
       "image": "/profile.jpg",
       "email": "gery@thrasibule.mx",
       "phone": "+33 6 12 87 22 84",
-      "url": "https://linktr.ee/gery_thrasibule",
+      "url": "",
       "summary": "I Fix, Refactor & Scale Complex Tech Stacks",
       "location": {
         "address": "91 avenue de lombez",
@@ -274,9 +285,19 @@
       },
       "profiles": [
         {
-          "network": "Linktree",
-          "username": "gery_thrasibule",
-          "url": "https://linktr.ee/gery_thrasibule"
+          "network": "LinkedIn",
+          "username": "Géry Thrasibule",
+          "url": "https://www.linkedin.com/in/g%C3%A9ry-thrasibule-98ab09a7/"
+        },
+        {
+          "network": "GitHub",
+          "username": "Flex97115",
+          "url": "https://github.com/Flex97115"
+        },
+        {
+          "network": "Medium",
+          "username": "@gryquandtestomb",
+          "url": "https://medium.com/@gryquandtestomb"
         }
       ]
     },
@@ -369,7 +390,7 @@
       },
       {
         "name": "Le Comptoir Des Pharmacies",
-        "position": "Chief Technical Officer - Associate",
+        "position": "Chief Technical Officer - Late founder",
         "url": "https://www.lecomptoirdespharmacies.fr",
         "logo": "https://logo.clearbit.com/lecomptoirdespharmacies.fr",
         "startDate": "2016-01",
@@ -495,7 +516,8 @@
           "ReactJS",
           "Deepgram",
           "Livekit",
-          "OpenAI"
+          "OpenAI",
+          "AI-Assisted Dev"
         ]
       },
       {
