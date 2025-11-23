@@ -11,21 +11,34 @@ const { lang } = Astro.params;
 const cvData = cv[lang as keyof typeof cv];
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-// Helper to parse date (YYYY-MM)
+// Helper to parse date (YYYY-MM or YYYY)
 function parseDate(dateStr: string) {
     if (!dateStr) return new Date();
-    const [year, month] = dateStr.split("-").map(Number);
-    return new Date(year, month - 1);
+    const parts = dateStr.split("-").map(Number);
+    if (parts.length === 1) {
+        return new Date(parts[0], 0); // Default to January if only year
+    }
+    return new Date(parts[0], parts[1] - 1);
 }
 
 // Calculate duration in months
 function getDurationInMonths(start: string, end: string) {
-    const startDate = parseDate(start);
-    const endDate = end ? parseDate(end) : new Date();
-    return (
-        (endDate.getFullYear() - startDate.getFullYear()) * 12 +
-        (endDate.getMonth() - startDate.getMonth())
-    );
+    try {
+        const startDate = parseDate(start);
+        // Handle "Present", "Présent", or empty string as Now
+        const isPresent =
+            !end ||
+            end.toLowerCase() === "present" ||
+            end.toLowerCase() === "présent";
+        const endDate = isPresent ? new Date() : parseDate(end);
+
+        const months =
+            (endDate.getFullYear() - startDate.getFullYear()) * 12 +
+            (endDate.getMonth() - startDate.getMonth());
+        return Math.max(1, months); // Ensure at least 1 month
+    } catch (e) {
+        return 1; // Default to 1 month on error
+    }
 }
 
 // Data Processing
@@ -317,7 +330,7 @@ const t = texts[lang as keyof typeof texts];
     const nodeGroup = g.append("g").attr("class", "nodes");
     const labelGroup = g.append("g").attr("class", "labels");
 
-    let simulation;
+    let simulation, node, link, label;
 
     function initGraph() {
         const width = container.clientWidth;
@@ -346,7 +359,7 @@ const t = texts[lang as keyof typeof texts];
             );
 
         // Draw links
-        const link = linkGroup
+        link = linkGroup
             .attr("stroke", "#999")
             .attr("stroke-opacity", 0.6)
             .selectAll("line")
@@ -355,7 +368,7 @@ const t = texts[lang as keyof typeof texts];
             .attr("stroke-width", (d) => Math.sqrt(d.value));
 
         // Draw nodes
-        const node = nodeGroup
+        node = nodeGroup
             .attr("stroke", "#fff")
             .attr("stroke-width", 2)
             .selectAll("circle")
@@ -378,7 +391,7 @@ const t = texts[lang as keyof typeof texts];
             });
 
         // Labels
-        const label = labelGroup
+        label = labelGroup
             .selectAll("text")
             .data(graphData.nodes)
             .join("text")
@@ -419,22 +432,61 @@ const t = texts[lang as keyof typeof texts];
     // Initialize
     initGraph();
 
-    // Check for skill query param
+    // Check for skill or category query param
     const urlParams = new URLSearchParams(window.location.search);
     const skillToHighlight = urlParams.get("skill");
+    const categoryToHighlight = urlParams.get("category");
 
     if (skillToHighlight) {
-        // Wait a bit for simulation to settle or just highlight immediately
-        // Finding the node
         const targetNode = graphData.nodes.find(
             (n) => n.id === skillToHighlight,
         );
         if (targetNode) {
-            // Use a timeout to ensure graph is ready
             setTimeout(() => {
                 highlightNode(targetNode);
             }, 500);
         }
+    } else if (categoryToHighlight) {
+        setTimeout(() => {
+            // Find all nodes in this category
+            const categoryNodes = graphData.nodes.filter(
+                (n) => n.category === categoryToHighlight,
+            );
+
+            if (categoryNodes.length > 0) {
+                // Dim all nodes first
+                node.style("opacity", 0.1);
+                link.style("opacity", 0.05);
+                label.style("opacity", 0.1);
+
+                // Highlight category nodes
+                categoryNodes.forEach((targetNode) => {
+                    // Highlight the node
+                    node.filter((d) => d.id === targetNode.id)
+                        .style("opacity", 1)
+                        .style("stroke", "#fff")
+                        .style("stroke-width", 2);
+
+                    label
+                        .filter((d) => d.id === targetNode.id)
+                        .style("opacity", 1)
+                        .style("font-weight", "bold");
+
+                    // Highlight connected links
+                    link.filter(
+                        (l) =>
+                            l.source.id === targetNode.id ||
+                            l.target.id === targetNode.id,
+                    )
+                        .style("opacity", 0.6)
+                        .style("stroke", (d) =>
+                            d.source.id === targetNode.id
+                                ? d.source.color
+                                : d.target.color,
+                        );
+                });
+            }
+        }, 500);
     }
 
     // Resize Observer

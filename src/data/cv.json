@@ -42,6 +42,7 @@
         ],
         "technologies": [
           "Python",
+          "FastAPI",
           "Terraform",
           "Scaleway",
           "AWS",
@@ -134,6 +135,7 @@
           "OpenAPI",
           "Java",
           "Python",
+          "Flask",
           "ReactJS",
           "Kafka",
           "PostgreSQL",
@@ -230,10 +232,27 @@
         "technologies": [
           "TypeScript",
           "Python",
+          "FastAPI",
           "Astro",
           "AI",
           "Speech-to-Speech",
-          "ReactJS"
+          "ReactJS",
+          "Deepgram",
+          "Livekit",
+          "OpenAI"
+        ]
+      },
+      {
+        "name": "Vibe CV",
+        "description": "Mon CV personnel interactif construit avec Astro et l'IA. Visualisation de compétences sous forme de graphe et déploiement automatisé.",
+        "url": "https://flex97115.github.io/vibe-cv",
+        "logo": "/favicon.svg",
+        "startDate": "2025-11",
+        "endDate": "",
+        "repository": "https://github.com/Flex97115/vibe-cv",
+        "technologies": [
+          "Vibe Coding",
+          "AI-Assisted Dev"
         ]
       }
     ]
@@ -373,6 +392,7 @@
           "OpenAPI",
           "Java",
           "Python",
+          "Flask",
           "ReactJS",
           "Kafka",
           "PostgreSQL",
@@ -472,7 +492,23 @@
           "Astro",
           "AI",
           "Speech-to-Speech",
-          "ReactJS"
+          "ReactJS",
+          "Deepgram",
+          "Livekit",
+          "OpenAI"
+        ]
+      },
+      {
+        "name": "Vibe CV",
+        "description": "My interactive personal CV built with Astro and AI. Skills visualization graph and automated deployment.",
+        "url": "https://flex97115.github.io/vibe-cv",
+        "logo": "/favicon.svg",
+        "startDate": "2025-11",
+        "endDate": "",
+        "repository": "https://github.com/Flex97115/vibe-cv",
+        "technologies": [
+          "Vibe Coding",
+          "AI-Assisted Dev"
         ]
       }
     ]

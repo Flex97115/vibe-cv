@@ -20,7 +20,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
                         <div class="title-group">
                             {project.logo && (
                                 <img
-                                    src={project.logo}
+                                    src={
+                                        project.logo.startsWith("http")
+                                            ? project.logo
+                                            : `${base}${project.logo}`
+                                    }
                                     alt={`${project.name} logo`}
                                     class="project-logo"
                                 />

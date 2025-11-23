@@ -14,14 +14,32 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 <Section title={title}>
   <div class="skills-grid">
     {
-      skills.map((skill) => (
-        <a
-          href={`${base}/${lang}/skills?skill=${skill.name}`}
-          class="skill-item"
-        >
-          <span class="name">{skill.name}</span>
-        </a>
-      ))
+      skills.map((skill) => {
+        let href = `${base}/${lang}/skills?skill=${skill.name}`;
+
+        // Custom mappings
+        if (
+          skill.name === "Architecture cloud" ||
+          skill.name === "Cloud Architecture"
+        ) {
+          href = `${base}/${lang}/skills?category=devops`;
+        } else if (
+          skill.name === "Architecture data" ||
+          skill.name === "Data Architecture"
+        ) {
+          href = `${base}/${lang}/skills?category=data`;
+        } else if (skill.name === "Entrepreunariat") {
+          href = `${base}/${lang}/skills?skill=Stratégie d'entreprise`;
+        } else if (skill.name === "Entrepreneurship") {
+          href = `${base}/${lang}/skills?skill=Business Strategy`;
+        }
+
+        return (
+          <a href={href} class="skill-item">
+            <span class="name">{skill.name}</span>
+          </a>
+        );
+      })
     }
   </div>
 </Section>
