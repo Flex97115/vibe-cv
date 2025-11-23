@@ -1,43 +1,205 @@
-``` --- import Section from "./Section.astro"; interface Props { projects:
-any[]; title: string; lang: string; } const { projects, title, lang } =
-Astro.props; const base = import.meta.env.BASE_URL.replace(/\/$/, ""); ---
-<Section title={title}> <div class="projects-list"> { projects.map((project) =>
-( <div class="project"> <div class="header"> <div class="title-group">
-{project.logo && ( <img src={project.logo} alt={`${project.name} logo`} class="project-logo"
-/> )} <h3>{project.name}</h3> </div> <div class="links"> {project.url && ( <a href={project.url}
-target="_blank" rel="noopener noreferrer" class="link" > <svg xmlns="http://www.w3.org/2000/svg"
-width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-stroke-linecap="round" stroke-linejoin="round" > <path d="M18 13v6a2 2 0 0 1-2 2H5a2
-2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /> <polyline points="15 3 21 3 21 9" /> <line x1="10"
-y1="14" x2="21" y2="3" /> </svg> Website </a> )} {project.repository && ( <a href={project.repository}
-target="_blank" rel="noopener noreferrer" class="link" > <svg xmlns="http://www.w3.org/2000/svg"
-width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-stroke-linecap="round" stroke-linejoin="round" > <path d="M9 19c-5 1.5-5-2.5-7-3m14
-6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77
-5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09
-1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37
-0 0 0 9 18.13V22" /> </svg> GitHub </a> )} </div> </div> <p class="description">{project.description}</p>
-{project.technologies && ( <div class="tech-stack"> {project.technologies.map((tech:
-string) => ( <a href={`${base}/${lang}/skills?skill=${tech}`} class="tech" >
-{tech} </a> ))} </div> )} </div> )) } </div> </Section> <style> .projects-list {
-display: flex; flex-direction: column; gap: var(--spacing-lg); } .project {
-padding: var(--spacing-md); background: var(--color-card-bg); border: 1px solid
-var(--color-border); border-radius: var(--radius-md); } .header { display: flex;
-justify-content: space-between; align-items: center; margin-bottom:
-var(--spacing-sm); flex-wrap: wrap; gap: var(--spacing-sm); } .title-group {
-display: flex; align-items: center; gap: var(--spacing-sm); } .project-logo {
-width: 24px; height: 24px; border-radius: 4px; object-fit: contain; } h3 {
-font-size: 1.25rem; margin: 0; color: #fff; } .links { display: flex; gap:
-var(--spacing-md); } .link { display: flex; align-items: center; gap: 0.5rem;
-font-size: 0.9rem; color: var(--color-primary); } .link:hover { color:
-var(--color-secondary); text-decoration: underline; } .description {
-margin-bottom: var(--spacing-md); color: var(--color-text-muted); } .tech-stack
-{ display: flex; flex-wrap: wrap; gap: 0.5rem; } .tech { font-size: 0.75rem;
-padding: 0.125rem 0.5rem; background: rgba(255, 255, 255, 0.05); border-radius:
-4px; color: var(--color-text-muted); text-decoration: none; transition: all
-0.2s; } .tech:hover { background: rgba(56, 189, 248, 0.1); color:
-var(--color-primary); } @media print { .project { background: transparent;
-border: none; padding: 0; margin-bottom: var(--spacing-md); page-break-inside:
-avoid; } h3 { color: var(--color-text); } .tech { border: 1px solid
-var(--color-border); background: transparent; color: var(--color-text); } }
+---
+import Section from "./Section.astro";
+
+interface Props {
+    projects: any[];
+    title: string;
+    lang: string;
+}
+
+const { projects, title, lang } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<Section title={title}>
+    <div class="projects-list">
+        {
+            projects.map((project) => (
+                <div class="project">
+                    <div class="header">
+                        <div class="title-group">
+                            {project.logo && (
+                                <img
+                                    src={project.logo}
+                                    alt={`${project.name} logo`}
+                                    class="project-logo"
+                                />
+                            )}
+                            <h3>{project.name}</h3>
+                        </div>
+                        <div class="links">
+                            {project.url && (
+                                <a
+                                    href={project.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="link"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                                        <polyline points="15 3 21 3 21 9" />
+                                        <line x1="10" y1="14" x2="21" y2="3" />
+                                    </svg>
+                                    Website
+                                </a>
+                            )}
+                            {project.repository && (
+                                <a
+                                    href={project.repository}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="link"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                                    </svg>
+                                    GitHub
+                                </a>
+                            )}
+                        </div>
+                    </div>
+                    <p class="description">{project.description}</p>
+                    {project.technologies && (
+                        <div class="tech-stack">
+                            {project.technologies.map((tech: string) => (
+                                <a
+                                    href={`${base}/${lang}/skills?skill=${tech}`}
+                                    class="tech"
+                                >
+                                    {tech}
+                                </a>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            ))
+        }
+    </div>
+</Section>
+
+<style>
+    .projects-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-lg);
+    }
+
+    .project {
+        padding: var(--spacing-md);
+        background: var(--color-card-bg);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-sm);
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+    }
+
+    .title-group {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+    }
+
+    .project-logo {
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+        object-fit: contain;
+    }
+
+    h3 {
+        font-size: 1.25rem;
+        margin: 0;
+        color: #fff;
+    }
+
+    .links {
+        display: flex;
+        gap: var(--spacing-md);
+    }
+
+    .link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--color-primary);
+    }
+
+    .link:hover {
+        color: var(--color-secondary);
+        text-decoration: underline;
+    }
+
+    .description {
+        margin-bottom: var(--spacing-md);
+        color: var(--color-text-muted);
+    }
+
+    .tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .tech {
+        font-size: 0.75rem;
+        padding: 0.125rem 0.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 4px;
+        color: var(--color-text-muted);
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .tech:hover {
+        background: rgba(56, 189, 248, 0.1);
+        color: var(--color-primary);
+    }
+
+    @media print {
+        .project {
+            background: transparent;
+            border: none;
+            padding: 0;
+            margin-bottom: var(--spacing-md);
+            page-break-inside: avoid;
+        }
+
+        h3 {
+            color: var(--color-text);
+        }
+
+        .tech {
+            border: 1px solid var(--color-border);
+            background: transparent;
+            color: var(--color-text);
+        }
+    }
 </style>

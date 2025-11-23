@@ -1,43 +1,201 @@
-```astro --- import Section from "./Section.astro"; interface Props { work: any;
-lang: string; } const { work, title, lang } = Astro.props; const base =
-import.meta.env.BASE_URL.replace(/\/$/, ""); function formatDate(dateStr:
-string) { if (!dateStr) return ""; const date = new Date(dateStr); const month =
-date.toLocaleString("fr-FR", { month: "short" }); const year =
-date.getFullYear(); // Capitalize first letter of month and add dot if it's
-short const formattedMonth = month.charAt(0).toUpperCase() + month.slice(1) +
-(month.length <= 3 ? "." : ""); return `${formattedMonth} ${year}`; } ---
-<Section title={title}> <div class="work-list"> { work.map((job) => ( <div
-class="job"> <div class="header"> <div class="left"> <div class="title-group">
-{job.logo && ( <img src={job.logo} alt={`${job.name} logo`} class="company-logo"
-/> )} <h3>{job.name}</h3> </div> <span class="position">{job.position}</span> </div>
-<div class="date"> {formatDate(job.startDate)} —{" "} {job.endDate ? formatDate(job.endDate)
-: title === "Expérience" ? "Présent" : "Present"} </div> </div> <p class="summary">{job.summary}</p>
-{job.highlights && ( <ul class="highlights"> {job.highlights.map((highlight: string)
-=> ( <li>{highlight}</li> ))} </ul> )} {job.technologies && ( <div class="tech-stack">
-{job.technologies.map((tech: string) => ( <a href={`${
-  base
-}/${lang}/skills?skill=${tech}`} class="tech"> {tech} </a> ))} </div> )} </div>
-)) } </div> </Section> <style> .work-list { display: flex; flex-direction:
-column; gap: var(--spacing-xl); } .job { position: relative; padding-left:
-var(--spacing-lg); border-left: 2px solid var(--color-border); } .job::before {
-content: ""; position: absolute; left: -5px; top: 0; width: 8px; height: 8px;
-border-radius: 50%; background: var(--color-primary); box-shadow: 0 0 0 4px
-var(--color-bg); } .header { display: flex; justify-content: space-between;
-align-items: baseline; margin-bottom: var(--spacing-sm); flex-wrap: wrap; gap:
-var(--spacing-sm); } .title-group { display: flex; align-items: center; gap:
-0.75rem; } .company-logo { width: 40px; height: 40px; border-radius: 4px;
-object-fit: contain; background: #fff; padding: 2px; } h3 { font-size: 1.25rem;
-margin: 0; color: #fff; } .position { color: var(--color-primary); font-weight:
-500; } .date { font-family: var(--font-sans); color: var(--color-text-muted);
-font-size: 0.9rem; } .summary { margin-bottom: var(--spacing-md); } .highlights
-{ margin: 0 0 var(--spacing-md) 0; padding-left: 1.2rem; color:
-var(--color-text-muted); } .highlights li { margin-bottom: 0.25rem; }
-.tech-stack { display: flex; flex-wrap: wrap; gap: 0.5rem; } .tech { font-size:
-0.75rem; padding: 0.125rem 0.5rem; background: rgba(255, 255, 255, 0.05);
-border-radius: 4px; color: var(--color-text-muted); text-decoration: none;
-transition: all 0.2s; } .tech:hover { background: rgba(56, 189, 248, 0.1);
-color: var(--color-primary); } @media print { .job { border-left: none;
-padding-left: 0; margin-bottom: var(--spacing-lg); page-break-inside: avoid; }
-.job::before { display: none; } h3 { color: var(--color-text); } .tech { border:
-1px solid var(--color-border); background: transparent; color:
-var(--color-text); } } </style>
+---
+import Section from "./Section.astro";
+
+interface Props {
+  work: any;
+  title: string;
+  lang: string;
+}
+
+const { work, title, lang } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+function formatDate(dateStr: string) {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  const month = date.toLocaleString("fr-FR", { month: "short" });
+  const year = date.getFullYear();
+  // Capitalize first letter of month and add dot if it's short
+  const formattedMonth =
+    month.charAt(0).toUpperCase() +
+    month.slice(1) +
+    (month.length <= 3 ? "." : "");
+  return `${formattedMonth} ${year}`;
+}
+---
+
+<Section title={title}>
+  <div class="work-list">
+    {
+      work.map((job: any) => (
+        <div class="job">
+          <div class="header">
+            <div class="left">
+              <div class="title-group">
+                {job.logo && (
+                  <img
+                    src={job.logo}
+                    alt={`${job.name} logo`}
+                    class="company-logo"
+                  />
+                )}
+                <h3>{job.name}</h3>
+              </div>
+              <span class="position">{job.position}</span>
+            </div>
+            <div class="date">
+              {formatDate(job.startDate)} —{" "}
+              {job.endDate
+                ? formatDate(job.endDate)
+                : title === "Expérience"
+                  ? "Présent"
+                  : "Present"}
+            </div>
+          </div>
+          <p class="summary">{job.summary}</p>
+          {job.highlights && (
+            <ul class="highlights">
+              {job.highlights.map((highlight: string) => (
+                <li>{highlight}</li>
+              ))}
+            </ul>
+          )}
+          {job.technologies && (
+            <div class="tech-stack">
+              {job.technologies.map((tech: string) => (
+                <a href={`${base}/${lang}/skills?skill=${tech}`} class="tech">
+                  {tech}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      ))
+    }
+  </div>
+</Section>
+
+<style>
+  .work-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+  }
+
+  .job {
+    position: relative;
+    padding-left: var(--spacing-lg);
+    border-left: 2px solid var(--color-border);
+  }
+
+  .job::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 0 4px var(--color-bg);
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--spacing-sm);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+
+  .title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .company-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    object-fit: contain;
+    background: #fff;
+    padding: 2px;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    margin: 0;
+    color: #fff;
+  }
+
+  .position {
+    color: var(--color-primary);
+    font-weight: 500;
+  }
+
+  .date {
+    font-family: var(--font-sans);
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+
+  .summary {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .highlights {
+    margin: 0 0 var(--spacing-md) 0;
+    padding-left: 1.2rem;
+    color: var(--color-text-muted);
+  }
+
+  .highlights li {
+    margin-bottom: 0.25rem;
+  }
+
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tech {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .tech:hover {
+    background: rgba(56, 189, 248, 0.1);
+    color: var(--color-primary);
+  }
+
+  @media print {
+    .job {
+      border-left: none;
+      padding-left: 0;
+      margin-bottom: var(--spacing-lg);
+      page-break-inside: avoid;
+    }
+
+    .job::before {
+      display: none;
+    }
+
+    h3 {
+      color: var(--color-text);
+    }
+
+    .tech {
+      border: 1px solid var(--color-border);
+      background: transparent;
+      color: var(--color-text);
+    }
+  }
+</style>
