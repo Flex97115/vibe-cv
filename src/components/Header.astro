@@ -4,10 +4,12 @@ interface Props {
 }
 
 const { lang } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const isFr = lang === "fr";
-const homeLink = isFr ? "/fr" : "/en";
-const switchLangLink = isFr ? "/en" : "/fr";
+const homeLink = `${base}/${isFr ? "fr" : "en"}`;
+const switchLangLink = `${base}/${isFr ? "en" : "fr"}`;
+const skillsLink = `${base}/${lang}/skills`;
 const switchLangLabel = isFr ? "EN" : "FR";
 ---
 
@@ -16,7 +18,7 @@ const switchLangLabel = isFr ? "EN" : "FR";
     <nav>
       <a href={homeLink} class="logo">GT.</a>
       <div class="actions">
-        <a href={`/${lang}/skills`} class="skills-link">
+        <a href={skillsLink} class="skills-link">
           {lang === "fr" ? "Graphe Compétences" : "Skills Graph"}
         </a>
         <button
