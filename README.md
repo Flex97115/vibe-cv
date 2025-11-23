@@ -1,6 +1,6 @@
 # Vibe CV
 
-A modern, multi-language CV website built entirely with AI assistance - no manual code editing involved.
+A modern, multi-language CV website built entirely with AI assistance - **no manual code editing involved**.
 
 ## Project Purpose
 
@@ -35,6 +35,7 @@ This project serves as an experiment to test the current state of AI-powered dev
 - **Model Performance**: The difference between low and high thinking modes is quite noticeable - the low mode tends to make more frequent mistakes
 - **Prompt Complexity**: Combining multiple tasks in a single prompt tends to confuse the AI, regardless of whether it's running in low or high mode
 - **Recommendation**: Keep prompts focused on single, clear objectives for best results
+- **Browser Usage**: When not using the web browser, the model is significantly less precise and struggled with path generation
 
 ## Running the Project
 
