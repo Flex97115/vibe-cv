@@ -53,7 +53,11 @@
 - **Links**: Connect projects to the skills they use.
 - **Highlighting**: URL params `?skill=Name` or `?category=Name` trigger auto-highlighting.
 
-### 4. Deployment
+### 4. Modélisation Responsive (Mobile-First)
+- **CRITICAL**: Toutes les pages, y compris les visualisations complexes ou les menus, MUST être "responsive" et s'adapter proprement sur mobile.
+- Toujours utiliser `flex-wrap: wrap`, ajuster les marges (`gap`, `padding`) et s'assurer que les barres de navigation ne se superposent/cassent pas hors du Viewport.
+
+### 5. Deployment
 - **Trigger**: Pushing a tag starting with `v` (e.g., `v1.0.0`).
 - **Workflow**: `.github/workflows/deploy.yml` builds and deploys to `gh-pages`.
 

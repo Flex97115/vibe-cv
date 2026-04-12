@@ -358,7 +358,7 @@ export default function ArchitecturePlayground({ lang = 'fr' }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       
       {/* Level 1: Companies */}
-      <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
         {Object.keys(companies).map(key => (
           <button
             key={key}
@@ -385,7 +385,7 @@ export default function ArchitecturePlayground({ lang = 'fr' }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
         
         {/* Projects Subtabs */}
-        <div style={{ display: 'flex', gap: '8px', opacity: Object.keys(companies[activeCompany].projects).length > 1 ? 1 : 0.5 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', opacity: Object.keys(companies[activeCompany].projects).length > 1 ? 1 : 0.5 }}>
           {Object.keys(companies[activeCompany].projects).map(key => (
             <button
               key={key}
