@@ -37,7 +37,7 @@ This project serves as an experiment to test the current state of AI-powered dev
 - **Recommendation**: Keep prompts focused on single, clear objectives for best results
 - **Browser Usage**: When not using the web browser, the model is significantly less precise and struggled with path generation
 
-### #2 - Gemini Pro 3 (Google DeepMind)
+### #2 - Gemini Pro 3.1 (Google DeepMind)
 **Date**: April 12, 2026  
 **IDE**: Antigravity  
 **What was built**: Architecture Playground & Mobile Optimization
