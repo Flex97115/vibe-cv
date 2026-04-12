@@ -46,6 +46,7 @@
 - Pages are routed via `src/pages/[lang]/...`.
 - Components receive `lang` as a prop.
 - Content is retrieved from `cv.json` using the `lang` key.
+- **CRITICAL**: ALL visible text in components (labels, buttons, graph nodes) MUST rely on internationalisation dictionaries `{ fr: "...", en: "..." }` and never be hardcoded in a single language.
 
 ### 3. Skill Graph Logic
 - **Nodes**: Generated from `cv.json` (projects/companies) and `skills-config.json` (skills).

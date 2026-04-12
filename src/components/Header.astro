@@ -10,6 +10,7 @@ const isFr = lang === "fr";
 const homeLink = `${base}/${isFr ? "fr" : "en"}`;
 const switchLangLink = `${base}/${isFr ? "en" : "fr"}`;
 const skillsLink = `${base}/${lang}/skills`;
+const archLink = `${base}/${lang}/architectures`;
 const switchLangLabel = isFr ? "EN" : "FR";
 ---
 
@@ -20,6 +21,9 @@ const switchLangLabel = isFr ? "EN" : "FR";
         <a href={homeLink} class="logo">GT.</a>
         <a href={skillsLink} class="skills-link">
           {lang === "fr" ? "Graphe Compétences" : "Skills Graph"}
+        </a>
+        <a href={archLink} class="skills-link">
+          Architecture
         </a>
       </div>
       <div class="actions">
