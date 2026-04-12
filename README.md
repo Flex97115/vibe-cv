@@ -14,7 +14,7 @@ This project serves as an experiment to test the current state of AI-powered dev
 ## Tech Stack
 
 - **Framework**: Astro 5.16.0
-- **Visualization**: D3.js (for interactive skills graph)
+- **Visuel/Interactive**: D3.js (skills graph) & React Flow (architecture playground)
 - **Deployment**: GitHub Pages with automated CI/CD
 - **Languages**: Multi-language support (French/English)
 
@@ -36,6 +36,20 @@ This project serves as an experiment to test the current state of AI-powered dev
 - **Prompt Complexity**: Combining multiple tasks in a single prompt tends to confuse the AI, regardless of whether it's running in low or high mode
 - **Recommendation**: Keep prompts focused on single, clear objectives for best results
 - **Browser Usage**: When not using the web browser, the model is significantly less precise and struggled with path generation
+
+### #2 - Gemini Pro 3 (Google DeepMind)
+**Date**: April 12, 2026  
+**IDE**: Antigravity  
+**What was built**: Architecture Playground & Mobile Optimization
+- Implementation of a rich, interactive "Architecture Playground" page (`/architectures`) using `React Flow` to visually demonstrate technical evolutions ("Legacy vs Modern") across past roles (Kocliko, MerciYanis, Le Comptoir Des Pharmacies).
+- Complete responsive refactoring including a slick, mobile app-like burger dropdown menu for the Header in vanilla JS/CSS.
+- Addition of a comprehensive `EXPERIENCE_SUMMARY.md` to persist rich context regarding technical challenges, topologies, and business achievements.
+- Strict multi-language component updates enforcing internationalization constraints for React visual elements.
+
+**Experience Notes**:
+- **Model Evolution**: Performs significantly better than Gemini Pro 3. The code generation process is noticeably much more fluid and precise than before.
+- **Voice Integration Functionality**: Audio recordings were utilized during this session and worked remarkably well, accurately extracting complex architectural designs.
+- **IDE Instabilities**: A recurring downside was the IDE timing out or stopping execution prematurely, frequently requiring the manual sending of "Continue" commands over text to resume the AI's flow.
 
 ## Running the Project
 
@@ -73,6 +87,7 @@ The GitHub Actions workflow will automatically build and deploy the site.
 - 📱 Responsive design optimized for web and print
 - 🌍 Multi-language support (FR/EN)
 - 📊 Interactive D3.js skills graph with filtering and highlighting
+- 🏗️ Interactive React Flow Architecture Playground (Legacy vs Modern)
 - 🔗 Clickable skills that link to the skills graph
 - 🎨 Modern, glassmorphic design with smooth animations
 - 📄 Print-friendly styling for PDF export
