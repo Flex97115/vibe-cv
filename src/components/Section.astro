@@ -1,40 +1,103 @@
 ---
 interface Props {
   title: string;
+  cmd?: string;
+  flag?: string;
+  count?: number;
   class?: string;
 }
 
-const { title, class: className } = Astro.props;
+const { title, cmd = "ls", flag, count, class: className } = Astro.props;
 ---
 
 <section class:list={["section", className]}>
-  <h2>{title}</h2>
+  <div class="sec-header">
+    <div class="prompt">
+      <span class="arrow">➜</span>
+      <span class="path">~/cv</span>
+      <span class="cmd">{cmd}</span>
+    </div>
+    <div class="banner-row">
+      <span class="banner-title">{title.toUpperCase()}</span>
+      {flag && <span class="flag">{flag}</span>}
+      {count != null && (
+        <span class="count">{count} résultats</span>
+      )}
+    </div>
+  </div>
   <slot />
 </section>
 
 <style>
   .section {
-    margin-bottom: var(--spacing-xl);
+    margin-top: 56px;
   }
 
-  h2 {
-    font-size: 1.5rem;
+  .sec-header {
+    margin-bottom: 20px;
+  }
+
+  .prompt {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+
+  .arrow {
+    color: var(--t-green);
+    font-weight: 600;
+  }
+
+  .path {
+    color: var(--t-cyan);
+  }
+
+  .cmd {
+    color: var(--t-ink);
+    font-weight: 500;
+  }
+
+  .banner-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--t-border);
+  }
+
+  .banner-title {
+    color: var(--t-panel);
+    background: var(--t-green);
+    padding: 2px 10px;
     font-weight: 700;
-    margin-bottom: var(--spacing-lg);
-    color: var(--color-text);
-    border-bottom: 2px solid var(--color-border);
-    padding-bottom: var(--spacing-sm);
-    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  .flag {
+    color: var(--t-dim);
+    font-size: 12px;
+  }
+
+  .count {
+    color: var(--t-dim);
+    font-size: 12px;
+    margin-left: auto;
   }
 
   @media print {
     .section {
-      margin-bottom: var(--spacing-lg);
+      margin-top: 28px;
     }
 
-    h2 {
-      color: var(--color-text);
-      border-bottom-color: var(--color-border);
+    .prompt {
+      display: none;
+    }
+
+    .banner-row {
+      margin-top: 0;
     }
   }
 </style>

@@ -1,61 +1,135 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/Header.astro";
-import ArchitecturePlayground from "../../components/react/ArchitecturePlayground.jsx";
-import { getCollection } from "astro:content";
+import ArchitecturesPage from "../../components/react/ArchitecturesPage.jsx";
+import archData from "../../data/arch-data.json";
 
 export function getStaticPaths() {
-  return [
-    { params: { lang: "fr" } },
-    { params: { lang: "en" } }
-  ];
+  return [{ params: { lang: "fr" } }, { params: { lang: "en" } }];
 }
 
 const { lang } = Astro.params;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const isFr = lang === "fr";
+const cvLink = `${base}/${lang}`;
+const title = isFr
+  ? `Architectures — Géry Thrasibule`
+  : `Architectures — Géry Thrasibule`;
 ---
 
-<Layout title={lang === "fr" ? "CV - Playgound Architecture" : "CV - Architecture Playground"} lang={lang}>
-  <Header lang={lang} />
-  
-  <main class="container">
-    <section class="intro">
-      <h1>
-        {lang === "fr" ? "Playground d'Architecture" : "Architecture Playground"}
-      </h1>
-      <p>
-        {lang === "fr" 
-          ? "Découvrez l'évolution technique et les choix architecturaux de mes expériences majeures d'ingénierie."
-          : "Discover the technical evolution and architectural decisions of my major engineering experiences."}
-      </p>
-    </section>
+<Layout title={title} lang={lang}>
+  <!-- System topbar -->
+  <div class="topbar no-print">
+    <div class="topbar-title">
+      ~/cv/arch <span class="slash">/</span>
+      <span class="topbar-sub"> géry · toulouse · cto</span>
+    </div>
+    <a href={cvLink} class="nav-link">← {isFr ? "Retour au CV" : "Back to CV"}</a>
+    <div class="spacer"></div>
+    <span class="label-muted">LANG</span>
+    <div class="seg">
+      <a href={`${base}/fr/architectures`} class={`seg-btn${isFr ? " on" : ""}`}>FR</a>
+      <a href={`${base}/en/architectures`} class={`seg-btn${!isFr ? " on" : ""}`}>EN</a>
+    </div>
+  </div>
 
-    <!-- React Flow client component -->
-    <ArchitecturePlayground client:load lang={lang} />
-  </main>
+  <!-- Architectures page (React, full height) -->
+  <div class="page-body">
+    <ArchitecturesPage
+      client:load
+      lang={lang}
+      data={archData}
+    />
+  </div>
 </Layout>
 
 <style>
-  .container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: var(--spacing-xl) var(--spacing-md);
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--t-panel);
+    border-bottom: 1px solid var(--t-border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 20px;
+    font-size: 12px;
+    color: var(--t-dim);
+    font-family: "JetBrains Mono", ui-monospace, monospace;
   }
 
-  .intro {
-    text-align: center;
-    margin-bottom: var(--spacing-xl);
+  .topbar-title {
+    font-weight: 600;
+    color: var(--t-white);
+    font-size: 13px;
+    white-space: nowrap;
   }
 
-  h1 {
-    font-size: 2.5rem;
-    letter-spacing: -0.05em;
-    background: linear-gradient(
-      to right,
-      var(--color-primary),
-      var(--color-secondary)
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: var(--spacing-sm);
+  .slash {
+    color: var(--t-green);
+    margin: 0 4px;
+  }
+
+  .topbar-sub {
+    color: var(--t-dim);
+    font-size: 11px;
+    font-weight: 400;
+  }
+
+  .nav-link {
+    color: var(--t-green);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    padding: 5px 10px;
+    border: 1px solid transparent;
+    text-decoration: none;
+  }
+
+  .nav-link:hover {
+    border-color: var(--t-green);
+  }
+
+  .spacer { flex: 1; }
+
+  .label-muted {
+    color: var(--t-faint);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+  }
+
+  .seg {
+    display: inline-flex;
+    border: 1px solid var(--t-border);
+    background: #fff;
+  }
+
+  .seg-btn {
+    background: transparent;
+    border: none;
+    color: var(--t-dim);
+    padding: 5px 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .seg-btn.on {
+    background: var(--t-green);
+    color: #fff;
+    font-weight: 700;
+  }
+
+  /* React component fills remaining viewport height */
+  .page-body {
+    height: calc(100vh - 43px);
+    overflow: hidden;
+  }
+
+  @media (max-width: 640px) {
+    .topbar-sub { display: none; }
   }
 </style>

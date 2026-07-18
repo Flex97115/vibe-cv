@@ -209,9 +209,20 @@
         "keywords": []
       }
     ],
+    "skillGroups": [
+      { "label": "Core", "items": ["Développement full-stack", "Architecture cloud", "Architecture data", "Clean Architecture", "API First"] },
+      { "label": "Leadership", "items": ["Management", "Stratégie d'entreprise", "Mentorat", "Scrum"] },
+      { "label": "Stack", "items": ["Python", "TypeScript", "Java", "ReactJS", "FastAPI", "Django", "NodeJS", "PostgreSQL", "MongoDB", "Kafka", "Airflow", "DBT"] },
+      { "label": "Cloud / DevOps", "items": ["AWS", "Azure", "Scaleway", "Terraform", "Terragrunt", "Docker", "Kubernetes", "CI/CD"] },
+      { "label": "Observabilité", "items": ["Grafana", "Sentry", "Datadog", "New Relic", "Metabase"] }
+    ],
     "languages": [
       {
         "language": "Français",
+        "fluency": "Langue maternelle"
+      },
+      {
+        "language": "Créole",
         "fluency": "Langue maternelle"
       },
       {
@@ -481,9 +492,20 @@
         "keywords": []
       }
     ],
+    "skillGroups": [
+      { "label": "Core", "items": ["Full-stack Development", "Cloud Architecture", "Data Architecture", "Clean Architecture", "API First"] },
+      { "label": "Leadership", "items": ["Management", "Business Strategy", "Mentoring", "Scrum"] },
+      { "label": "Stack", "items": ["Python", "TypeScript", "Java", "ReactJS", "FastAPI", "Django", "NodeJS", "PostgreSQL", "MongoDB", "Kafka", "Airflow", "DBT"] },
+      { "label": "Cloud / DevOps", "items": ["AWS", "Azure", "Scaleway", "Terraform", "Terragrunt", "Docker", "Kubernetes", "CI/CD"] },
+      { "label": "Observability", "items": ["Grafana", "Sentry", "Datadog", "New Relic", "Metabase"] }
+    ],
     "languages": [
       {
         "language": "French",
+        "fluency": "Native Language"
+      },
+      {
+        "language": "Creole",
         "fluency": "Native Language"
       },
       {

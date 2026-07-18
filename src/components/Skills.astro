@@ -3,79 +3,82 @@ import Section from "./Section.astro";
 
 interface Props {
   skills: any[];
+  skillGroups?: any[];
   title: string;
   lang: string;
 }
 
-const { skills, title, lang } = Astro.props;
+const { skills, skillGroups, title, lang } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
-<Section title={title}>
-  <div class="skills-grid">
-    {
-      skills.map((skill) => {
-        let href = `${base}/${lang}/skills?skill=${skill.name}`;
-
-        // Custom mappings
-        if (
-          skill.name === "Architecture cloud" ||
-          skill.name === "Cloud Architecture"
-        ) {
-          href = `${base}/${lang}/skills?category=devops`;
-        } else if (
-          skill.name === "Architecture data" ||
-          skill.name === "Data Architecture"
-        ) {
-          href = `${base}/${lang}/skills?category=data`;
-        } else if (skill.name === "Entrepreunariat") {
-          href = `${base}/${lang}/skills?skill=Stratégie d'entreprise`;
-        } else if (skill.name === "Entrepreneurship") {
-          href = `${base}/${lang}/skills?skill=Business Strategy`;
-        }
-
-        return (
-          <a href={href} class="skill-item">
-            <span class="name">{skill.name}</span>
-          </a>
-        );
-      })
-    }
-  </div>
+<Section title={title} cmd="skills --grouped">
+  {skillGroups && skillGroups.length > 0 ? (
+    <div class="groups">
+      {skillGroups.map((group: any) => (
+        <div class="group">
+          <div class="group-label">## {group.label}</div>
+          <div class="group-items">
+            {group.items.map((item: string) => (
+              <span class="skill-pill">{item}</span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <div class="flat-skills">
+      {skills.map((s: any) => (
+        <a href={`${base}/${lang}/skills?skill=${s.name}`} class="skill-pill">{s.name}</a>
+      ))}
+    </div>
+  )}
 </Section>
 
 <style>
-  .skills-grid {
+  .groups {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
+    flex-direction: column;
+    gap: 12px;
   }
 
-  .skill-item {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--color-border);
-    transition: all 0.2s;
+  .group-label {
+    color: var(--t-magenta);
+    font-size: 11px;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  .group-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .skill-pill {
+    font-size: 11px;
+    padding: 2px 8px;
+    color: var(--t-ink);
+    border: 1px solid var(--t-border);
+    background: transparent;
     text-decoration: none;
     display: inline-block;
   }
 
-  .skill-item:hover {
-    border-color: var(--color-primary);
-    background: rgba(56, 189, 248, 0.1);
+  a.skill-pill:hover {
+    border-color: var(--t-green);
+    color: var(--t-green);
   }
 
-  .name {
-    color: var(--color-text);
-    font-weight: 500;
+  .flat-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
   }
 
   @media print {
-    .skill-item {
-      background: transparent;
-      border: 1px solid var(--color-border);
-      color: var(--color-text);
+    .skill-pill {
+      border: 1px solid var(--t-border);
       page-break-inside: avoid;
     }
   }

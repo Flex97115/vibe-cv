@@ -1,0 +1,366 @@
+{
+  "companies": [
+    {
+      "id": "kocliko",
+      "label": "Kocliko",
+      "cases": [
+        {
+          "id": "kocliko-data",
+          "year": "2024→",
+          "kind": { "fr": "Data Pipeline", "en": "Data Pipeline" },
+          "title": {
+            "fr": "Refonte pipeline IoT : 6h → 40min",
+            "en": "IoT pipeline rebuild: 6h → 40min"
+          },
+          "tagline": {
+            "fr": "Millions de points par jour, latence divisée par 9.",
+            "en": "Millions of data points per day, 9× lower latency."
+          },
+          "metrics": [
+            { "value": "6h",    "label": { "fr": "AVANT",        "en": "BEFORE"  }, "tone": "red"    },
+            { "value": "40min", "label": { "fr": "APRÈS",        "en": "AFTER"   }, "tone": "green"  },
+            { "value": "9×",    "label": { "fr": "ACCÉLÉRATION", "en": "SPEEDUP" }, "tone": "accent" }
+          ],
+          "before": {
+            "label": { "fr": "Monolithique · exécution 6h", "en": "Monolithic · 6h runtime" },
+            "nodes": [
+              { "id": "iot",    "x": 60,  "y": 320, "w": 130, "h": 55, "label": "IoT Providers", "kind": "source" },
+              { "id": "cron",   "x": 270, "y": 150, "w": 140, "h": 55, "label": "Cronjob Linux",  "kind": "orch",  "subtitle": "Orchestration" },
+              { "id": "django", "x": 470, "y": 245, "w": 160, "h": 80, "label": "App Django",     "kind": "mono",  "subtitle": "Pull, Calc & Store · 6h" },
+              { "id": "pg",     "x": 700, "y": 265, "w": 130, "h": 55, "label": "PostgreSQL",     "kind": "db",    "subtitle": "Data & Résultats" }
+            ],
+            "edges": [
+              { "from": "iot",    "to": "django" },
+              { "from": "cron",   "to": "django" },
+              { "from": "django", "to": "pg" }
+            ],
+            "notes": [
+              { "fr": "ETL séquentiel, pas de parallélisme", "en": "Sequential ETL, no parallelism" },
+              { "fr": "Cronjob Linux fragile, pas de retry", "en": "Fragile Linux cronjob, no retry" },
+              { "fr": "Coût AWS élevé, pas de séparation chaud/froid", "en": "High AWS cost, no hot/cold split" }
+            ]
+          },
+          "after": {
+            "label": { "fr": "Ingestion temps réel · 40min batch", "en": "Real-time ingest · 40min batch" },
+            "nodes": [
+              { "id": "iot_p",   "x": 30,  "y": 80,  "w": 120, "h": 55, "label": "IoT Providers", "kind": "source" },
+              { "id": "airpull", "x": 215, "y": 80,  "w": 140, "h": 55, "label": "Airflow Pull",  "kind": "orch",  "subtitle": "Tasks d'ingestion" },
+              { "id": "mongo_p", "x": 420, "y": 80,  "w": 130, "h": 55, "label": "MongoDB",       "kind": "db",    "subtitle": "Stockage brut" },
+              { "id": "iot_m",   "x": 30,  "y": 400, "w": 120, "h": 55, "label": "IoT MQTT",      "kind": "source" },
+              { "id": "mqtt",    "x": 215, "y": 400, "w": 140, "h": 55, "label": "Scaleway MQTT", "kind": "mq",    "subtitle": "Serverless + Queue" },
+              { "id": "mongo_t", "x": 420, "y": 400, "w": 140, "h": 55, "label": "Mongo TS",      "kind": "db",    "subtitle": "Temps réel" },
+              { "id": "backup",  "x": 630, "y": 240, "w": 130, "h": 55, "label": "Backups",       "kind": "cold",  "subtitle": "Hot & Cold" },
+              { "id": "aircalc", "x": 630, "y": 400, "w": 140, "h": 55, "label": "Airflow Calc",  "kind": "orch",  "subtitle": "40min · KPIs" },
+              { "id": "pg",      "x": 840, "y": 320, "w": 130, "h": 55, "label": "PostgreSQL",    "kind": "db",    "subtitle": "Résultats" }
+            ],
+            "edges": [
+              { "from": "iot_p",   "to": "airpull" },
+              { "from": "airpull", "to": "mongo_p" },
+              { "from": "iot_m",   "to": "mqtt" },
+              { "from": "mqtt",    "to": "mongo_t",  "kind": "hot" },
+              { "from": "mongo_p", "to": "backup" },
+              { "from": "mongo_t", "to": "backup" },
+              { "from": "mongo_p", "to": "aircalc" },
+              { "from": "mongo_t", "to": "aircalc",  "kind": "hot" },
+              { "from": "aircalc", "to": "pg" }
+            ],
+            "notes": [
+              { "fr": "Airflow Pull + MQTT Scaleway en parallèle", "en": "Parallel Airflow Pull + Scaleway MQTT" },
+              { "fr": "Séparation hot (TimeSeries) / cold (brut)", "en": "Hot (TimeSeries) / cold (raw) split" },
+              { "fr": "AWS → Scaleway · Terraform modulaire", "en": "AWS → Scaleway · modular Terraform" }
+            ]
+          }
+        },
+        {
+          "id": "kocliko-web",
+          "year": "2024→",
+          "kind": { "fr": "Application Web", "en": "Web Application" },
+          "title": {
+            "fr": "Monolithe → Microservices : < 1s",
+            "en": "Monolith → Microservices: sub-second"
+          },
+          "tagline": {
+            "fr": "Refonte React + FastAPI, maintenance simplifiée, scalabilité.",
+            "en": "React + FastAPI rewrite, simplified maintenance, scalable."
+          },
+          "metrics": [
+            { "value": "< 1s",  "label": { "fr": "RÉPONSE",      "en": "RESPONSE"     }, "tone": "green"  },
+            { "value": "2×",    "label": { "fr": "MODULAIRE",    "en": "MODULAR"       }, "tone": "accent" },
+            { "value": "IA",    "label": { "fr": "CO-DEV",       "en": "CO-DEV"        }, "tone": "accent" }
+          ],
+          "before": {
+            "label": { "fr": "Monolithe Django · lenteurs UX", "en": "Django Monolith · slow UX" },
+            "nodes": [
+              { "id": "users",  "x": 80,  "y": 270, "w": 120, "h": 55, "label": "Utilisateurs",     "kind": "source" },
+              { "id": "django", "x": 320, "y": 240, "w": 200, "h": 80, "label": "Monolithe Django", "kind": "mono",  "subtitle": "Toutes les features" },
+              { "id": "pg",     "x": 600, "y": 270, "w": 130, "h": 55, "label": "PostgreSQL",       "kind": "db" }
+            ],
+            "edges": [
+              { "from": "users",  "to": "django" },
+              { "from": "django", "to": "pg" }
+            ],
+            "notes": [
+              { "fr": "Lenteurs UX, maintenance complexe", "en": "Slow UX, complex maintenance" },
+              { "fr": "Déploiements risqués, couplage fort", "en": "Risky deploys, tight coupling" },
+              { "fr": "Pas de scalabilité horizontale", "en": "No horizontal scaling" }
+            ]
+          },
+          "after": {
+            "label": { "fr": "React + FastAPI + IA · modulaire", "en": "React + FastAPI + AI · modular" },
+            "nodes": [
+              { "id": "react_c", "x": 30,  "y": 80,  "w": 130, "h": 55, "label": "Front Clients", "kind": "source", "subtitle": "React" },
+              { "id": "react_a", "x": 30,  "y": 400, "w": 130, "h": 55, "label": "Front Admins",  "kind": "source", "subtitle": "React" },
+              { "id": "ai",      "x": 30,  "y": 240, "w": 130, "h": 55, "label": "Assistant IA",  "kind": "orch",   "subtitle": "Co-Développement" },
+              { "id": "api_c",   "x": 240, "y": 80,  "w": 150, "h": 55, "label": "FastAPI Clients","kind": "hot",    "subtitle": "Microservice" },
+              { "id": "api_a",   "x": 240, "y": 400, "w": 150, "h": 55, "label": "FastAPI Admins", "kind": "hot",    "subtitle": "Microservice" },
+              { "id": "pg",      "x": 480, "y": 240, "w": 130, "h": 55, "label": "PostgreSQL",     "kind": "db" },
+              { "id": "monitor", "x": 480, "y": 400, "w": 130, "h": 55, "label": "Monitoring",     "kind": "viz",    "subtitle": "Sentry / Metrics" }
+            ],
+            "edges": [
+              { "from": "react_c", "to": "api_c" },
+              { "from": "react_a", "to": "api_a" },
+              { "from": "ai",      "to": "api_c",   "kind": "hot" },
+              { "from": "ai",      "to": "api_a",   "kind": "hot" },
+              { "from": "api_c",   "to": "pg" },
+              { "from": "api_a",   "to": "pg" },
+              { "from": "api_a",   "to": "monitor", "kind": "archive" },
+              { "from": "api_c",   "to": "monitor", "kind": "archive" }
+            ],
+            "notes": [
+              { "fr": "FastAPI Clients + Admins découplés", "en": "Decoupled Clients + Admins FastAPIs" },
+              { "fr": "IA intégrée en co-développement", "en": "AI integrated for co-development" },
+              { "fr": "Monitoring Sentry + métriques temps réel", "en": "Sentry monitoring + real-time metrics" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "merciyanis",
+      "label": "MerciYanis",
+      "cases": [
+        {
+          "id": "merciyanis-webapp",
+          "year": "2024",
+          "kind": { "fr": "App Web & Gateway", "en": "Web App & Gateway" },
+          "title": {
+            "fr": "Bare-metal → Serverless sans couture",
+            "en": "Bare-metal → Serverless, zero-downtime"
+          },
+          "tagline": {
+            "fr": "400+ bases migrées · Hookdeck Event Gateway · 0 downtime.",
+            "en": "400+ DBs migrated · Hookdeck Event Gateway · 0 downtime."
+          },
+          "metrics": [
+            { "value": "400+", "label": { "fr": "BASES",    "en": "DBs"      }, "tone": "accent" },
+            { "value": "0",    "label": { "fr": "DOWNTIME", "en": "DOWNTIME" }, "tone": "green"  },
+            { "value": "PaaS", "label": { "fr": "MIGRATION","en": "MIGRATION"}, "tone": "accent" }
+          ],
+          "before": {
+            "label": { "fr": "OVH bare-metal · downtime déploiements", "en": "OVH bare-metal · deployment downtime" },
+            "nodes": [
+              { "id": "iot",  "x": 80,  "y": 270, "w": 140, "h": 55, "label": "Webhooks IoT", "kind": "source" },
+              { "id": "ovh",  "x": 330, "y": 245, "w": 180, "h": 80, "label": "Serveur OVH",  "kind": "mono",  "subtitle": "Docker Monolithe" },
+              { "id": "down", "x": 620, "y": 270, "w": 150, "h": 55, "label": "Downtime",     "kind": "mono",  "subtitle": "Perte de données" }
+            ],
+            "edges": [
+              { "from": "iot",  "to": "ovh" },
+              { "from": "ovh",  "to": "down", "kind": "archive" }
+            ],
+            "notes": [
+              { "fr": "Downtime à chaque déploiement OVH", "en": "Downtime on every OVH deployment" },
+              { "fr": "Perte de données IoT lors des redémarrages", "en": "IoT data loss during restarts" },
+              { "fr": "Scaling manuel · monitoring partiel", "en": "Manual scaling · partial monitoring" }
+            ]
+          },
+          "after": {
+            "label": { "fr": "Hookdeck buffer · PaaS auto-scale", "en": "Hookdeck buffer · PaaS auto-scale" },
+            "nodes": [
+              { "id": "iot",      "x": 80,  "y": 270, "w": 140, "h": 55, "label": "Webhooks IoT", "kind": "source" },
+              { "id": "hookdeck", "x": 340, "y": 245, "w": 180, "h": 80, "label": "Hookdeck",     "kind": "orch",   "subtitle": "Event Gateway / Buffer" },
+              { "id": "paas",     "x": 640, "y": 270, "w": 150, "h": 55, "label": "PaaS",         "kind": "hot",    "subtitle": "Hébergement App" }
+            ],
+            "edges": [
+              { "from": "iot",      "to": "hookdeck", "kind": "hot" },
+              { "from": "hookdeck", "to": "paas",     "kind": "hot" }
+            ],
+            "notes": [
+              { "fr": "Hookdeck bufferise les events pendant les dép.", "en": "Hookdeck buffers events during deploys" },
+              { "fr": "Continuité de service 100% garantie", "en": "100% service continuity guaranteed" },
+              { "fr": "Auto-scale PaaS · Terraform IaC", "en": "PaaS auto-scale · Terraform IaC" }
+            ]
+          }
+        },
+        {
+          "id": "merciyanis-pta",
+          "year": "2024",
+          "kind": { "fr": "Nouveau Projet", "en": "New Project" },
+          "title": {
+            "fr": "PTA : 500k événements/mois sur Azure",
+            "en": "PTA: 500k events/month on Azure"
+          },
+          "tagline": {
+            "fr": "Dispositifs de protection travailleurs · serverless Azure Functions.",
+            "en": "Worker protection devices · Azure Functions serverless."
+          },
+          "metrics": [
+            { "value": "500k+", "label": { "fr": "ÉVT/MOIS",  "en": "EVENTS/MO"  }, "tone": "accent" },
+            { "value": "0→1",   "label": { "fr": "GREENFIELD","en": "GREENFIELD"  }, "tone": "accent" },
+            { "value": "Azure", "label": { "fr": "SERVERLESS","en": "SERVERLESS"  }, "tone": "green"  }
+          ],
+          "before": {
+            "label": { "fr": "Projet inexistant", "en": "Non-existent project" },
+            "nodes": [
+              { "id": "na", "x": 350, "y": 265, "w": 280, "h": 55, "label": "Nouveau projet (N/A)", "kind": "db", "subtitle": "Aucune infrastructure avant" }
+            ],
+            "edges": [],
+            "notes": [
+              { "fr": "Aucune infrastructure préexistante", "en": "No pre-existing infrastructure" },
+              { "fr": "Nouveau besoin métier : protection travailleurs isolés", "en": "New business need: isolated worker protection" },
+              { "fr": "Besoin de fiabilité et temps réel critiques", "en": "Critical reliability and real-time requirements" }
+            ]
+          },
+          "after": {
+            "label": { "fr": "Azure Functions · décryptage · alertes", "en": "Azure Functions · decrypt · alerts" },
+            "nodes": [
+              { "id": "ws",      "x": 50,  "y": 270, "w": 130, "h": 55, "label": "Appareils PTA",     "kind": "source", "subtitle": "WebSocket" },
+              { "id": "azure",   "x": 270, "y": 245, "w": 160, "h": 80, "label": "Azure Functions",  "kind": "hot",    "subtitle": "Décryptage & Serverless" },
+              { "id": "api",     "x": 540, "y": 155, "w": 160, "h": 55, "label": "API MerciYanis",   "kind": "hot",    "subtitle": "Stockage central" },
+              { "id": "protect", "x": 540, "y": 360, "w": 160, "h": 55, "label": "Service Protection","kind": "orch",   "subtitle": "Alertes Secours" }
+            ],
+            "edges": [
+              { "from": "ws",    "to": "azure",   "kind": "hot" },
+              { "from": "azure", "to": "api" },
+              { "from": "azure", "to": "protect" }
+            ],
+            "notes": [
+              { "fr": "500k+ événements/mois traités en serverless", "en": "500k+ events/month processed serverless" },
+              { "fr": "Alertes de secours temps réel", "en": "Real-time emergency alerts" },
+              { "fr": "Chiffrement de bout en bout des données", "en": "End-to-end data encryption" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "lcp",
+      "label": "Le Comptoir Des Pharmacies",
+      "cases": [
+        {
+          "id": "lcp-soa",
+          "year": "2016→2024",
+          "kind": { "fr": "Application Web", "en": "Web Application" },
+          "title": {
+            "fr": "Monolithe → SOA : 10× clients, +15% CA",
+            "en": "Monolith → SOA: 10× customers, +15% revenue"
+          },
+          "tagline": {
+            "fr": "Heroku Java → AWS React microservices, en 8 ans de CTO fondateur.",
+            "en": "Heroku Java → AWS React microservices over 8 years as founding CTO."
+          },
+          "metrics": [
+            { "value": "10×",   "label": { "fr": "CLIENTS",           "en": "CUSTOMERS"    }, "tone": "accent" },
+            { "value": "+15%",  "label": { "fr": "CHIFFRE D'AFFAIRES","en": "REVENUE"      }, "tone": "green"  },
+            { "value": "8 ans", "label": { "fr": "CTO FONDATEUR",     "en": "FOUNDING CTO" }, "tone": "accent" }
+          ],
+          "before": {
+            "label": { "fr": "Heroku · monolithe Java Play", "en": "Heroku · Java Play monolith" },
+            "nodes": [
+              { "id": "usr",   "x": 80,  "y": 270, "w": 120, "h": 55, "label": "Utilisateurs",     "kind": "source" },
+              { "id": "heroku","x": 320, "y": 240, "w": 220, "h": 80, "label": "Heroku (Play)",     "kind": "mono",  "subtitle": "Monolithe Java" },
+              { "id": "crash", "x": 660, "y": 270, "w": 160, "h": 55, "label": "Instabilité",      "kind": "mono",  "subtitle": "Charge non tenue" }
+            ],
+            "edges": [
+              { "from": "usr",    "to": "heroku" },
+              { "from": "heroku", "to": "crash",  "kind": "archive" }
+            ],
+            "notes": [
+              { "fr": "Lenteurs UX · maintenance complexe (Java Play)", "en": "Slow UX · complex maintenance (Java Play)" },
+              { "fr": "Scalabilité plafonnée, déploiements risqués", "en": "Scaling ceiling, risky deploys" },
+              { "fr": "Pas de découpage domaines métier", "en": "No business domain separation" }
+            ]
+          },
+          "after": {
+            "label": { "fr": "AWS · React · SOA · Kafka", "en": "AWS · React · SOA · Kafka" },
+            "nodes": [
+              { "id": "ds",    "x": 30,  "y": 80,  "w": 130, "h": 55, "label": "Design System",    "kind": "orch",   "subtitle": "Composants UI" },
+              { "id": "f_cli", "x": 30,  "y": 200, "w": 130, "h": 55, "label": "Front Clients",    "kind": "source", "subtitle": "React" },
+              { "id": "f_adm", "x": 30,  "y": 350, "w": 130, "h": 55, "label": "Front Admins",     "kind": "source", "subtitle": "React" },
+              { "id": "aws",   "x": 250, "y": 250, "w": 170, "h": 80, "label": "Services Backend", "kind": "hot",    "subtitle": "Microservices AWS" },
+              { "id": "kafka", "x": 510, "y": 140, "w": 140, "h": 55, "label": "Kafka",            "kind": "mq",     "subtitle": "Change Data Capture" },
+              { "id": "pg",    "x": 510, "y": 350, "w": 130, "h": 55, "label": "PostgreSQL",       "kind": "db",     "subtitle": "Transactionnel" }
+            ],
+            "edges": [
+              { "from": "ds",    "to": "f_cli", "kind": "archive" },
+              { "from": "ds",    "to": "f_adm", "kind": "archive" },
+              { "from": "f_cli", "to": "aws" },
+              { "from": "f_adm", "to": "aws" },
+              { "from": "aws",   "to": "kafka", "kind": "hot" },
+              { "from": "aws",   "to": "pg" }
+            ],
+            "notes": [
+              { "fr": "SOA · API First · OpenAPI · Clean Architecture", "en": "SOA · API First · OpenAPI · Clean Architecture" },
+              { "fr": "Design system partagé UI/UX, équipe 7 personnes", "en": "Shared UI/UX design system, 7-person team" },
+              { "fr": "Kafka CDC · Kafka streams vers Data Warehouse", "en": "Kafka CDC · streams to Data Warehouse" }
+            ]
+          }
+        },
+        {
+          "id": "lcp-data",
+          "year": "2020→2024",
+          "kind": { "fr": "Data & BI", "en": "Data & BI" },
+          "title": {
+            "fr": "Data Warehouse + IA : CA +15%",
+            "en": "Data Warehouse + AI: Revenue +15%"
+          },
+          "tagline": {
+            "fr": "Airflow ML, DBT, Metabase — recommandations produits basées sur la data.",
+            "en": "Airflow ML, DBT, Metabase — data-driven product recommendations."
+          },
+          "metrics": [
+            { "value": "+15%",   "label": { "fr": "CHIFFRE D'AFFAIRES","en": "REVENUE"       }, "tone": "green"  },
+            { "value": "IA",     "label": { "fr": "RECOMMANDATIONS",   "en": "RECOS"          }, "tone": "accent" },
+            { "value": "0→1",    "label": { "fr": "GREENFIELD",        "en": "GREENFIELD"     }, "tone": "accent" }
+          ],
+          "before": {
+            "label": { "fr": "Projet inexistant", "en": "Non-existent project" },
+            "nodes": [
+              { "id": "na", "x": 340, "y": 265, "w": 280, "h": 55, "label": "Nouveau projet Data (N/A)", "kind": "db", "subtitle": "Aucune infrastructure BI avant" }
+            ],
+            "edges": [],
+            "notes": [
+              { "fr": "Aucune infrastructure data/BI préexistante", "en": "No pre-existing data/BI infrastructure" },
+              { "fr": "Décisions business sans data · perte d'opportunités", "en": "Business decisions without data · missed opportunities" },
+              { "fr": "Nouveau périmètre : data warehouse + recommandations IA", "en": "New scope: data warehouse + AI recommendations" }
+            ]
+          },
+          "after": {
+            "label": { "fr": "Stitch · Airflow ML · DBT · Metabase", "en": "Stitch · Airflow ML · DBT · Metabase" },
+            "nodes": [
+              { "id": "pg_ops",   "x": 30,  "y": 110, "w": 140, "h": 55, "label": "DB Opérationnelle","kind": "db",   "subtitle": "PostgreSQL" },
+              { "id": "prov",     "x": 30,  "y": 390, "w": 140, "h": 55, "label": "Providers",         "kind": "source","subtitle": "Mailchimp, Sheets" },
+              { "id": "stitch",   "x": 250, "y": 250, "w": 140, "h": 55, "label": "Stitch Data",       "kind": "orch", "subtitle": "ETL / Duplication" },
+              { "id": "dwh",      "x": 470, "y": 250, "w": 140, "h": 55, "label": "Data Warehouse",    "kind": "db",   "subtitle": "PostgreSQL" },
+              { "id": "airflow",  "x": 690, "y": 110, "w": 140, "h": 55, "label": "Airflow ML",        "kind": "orch", "subtitle": "Algorithmes Reco" },
+              { "id": "svc_data", "x": 690, "y": 390, "w": 150, "h": 55, "label": "Service Data",      "kind": "hot",  "subtitle": "API Recommandations" },
+              { "id": "metabase", "x": 900, "y": 250, "w": 130, "h": 55, "label": "Metabase",          "kind": "viz",  "subtitle": "Aide à la décision" }
+            ],
+            "edges": [
+              { "from": "pg_ops",   "to": "stitch" },
+              { "from": "prov",     "to": "stitch" },
+              { "from": "stitch",   "to": "dwh" },
+              { "from": "dwh",      "to": "airflow" },
+              { "from": "dwh",      "to": "metabase" },
+              { "from": "airflow",  "to": "svc_data", "kind": "hot" }
+            ],
+            "notes": [
+              { "fr": "Stitch ETL : ingestion multi-sources automatisée", "en": "Stitch ETL: automated multi-source ingestion" },
+              { "fr": "Airflow ML : algorithmes de recommandation produits", "en": "Airflow ML: product recommendation algorithms" },
+              { "fr": "Metabase · aide à la décision · CA +15%", "en": "Metabase · decision support · revenue +15%" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

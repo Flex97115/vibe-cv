@@ -9,75 +9,44 @@ interface Props {
 const { education, title } = Astro.props;
 ---
 
-<Section title={title}>
-  <div class="grid">
-    {
-      education.map((edu) => (
-        <div class="edu-item">
-          <div class="header">
-            <h3>{edu.institution}</h3>
-            <span class="date">{edu.endDate}</span>
-          </div>
-          <div class="details">
-            <span class="area">{edu.area}</span>
-            <span class="type">• {edu.studyType}</span>
-          </div>
-        </div>
-      ))
-    }
+<Section title={title} cmd="edu --list">
+  <div class="edu-list">
+    {education.map((e: any) => (
+      <div class="edu-item">
+        <div class="year">[{e.endDate || e.startDate}]</div>
+        <div class="institution">{e.institution}</div>
+        <div class="details">{e.area} · {e.studyType}</div>
+      </div>
+    ))}
   </div>
 </Section>
 
 <style>
-  .grid {
-    display: grid;
-    gap: var(--spacing-md);
-  }
-
-  .edu-item {
-    background: var(--color-card-bg);
-    padding: var(--spacing-md);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--color-border);
-  }
-
-  .header {
+  .edu-list {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: var(--spacing-sm);
+    flex-direction: column;
+    gap: 14px;
   }
 
-  h3 {
-    font-size: 1.1rem;
-    margin: 0;
-    color: var(--color-text);
+  .edu-item {}
+
+  .year {
+    color: var(--t-amber);
+    font-size: 12px;
   }
 
-  .date {
-    font-size: 0.9rem;
-    color: var(--color-text-muted);
+  .institution {
+    color: var(--t-white);
+    font-weight: 600;
+    font-size: 14px;
   }
 
-  .area {
-    color: var(--color-primary);
-    font-weight: 500;
-  }
-
-  .type {
-    color: var(--color-text-muted);
+  .details {
+    color: var(--t-dim);
+    font-size: 13px;
   }
 
   @media print {
-    .edu-item {
-      background: transparent;
-      border: none;
-      padding: 0;
-      margin-bottom: var(--spacing-sm);
-      page-break-inside: avoid;
-    }
-
-    h3 {
-      color: var(--color-text);
-    }
+    .edu-item { page-break-inside: avoid; }
   }
 </style>

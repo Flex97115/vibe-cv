@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/Header.astro";
 import Basics from "../../components/Basics.astro";
+import Metrics from "../../components/Metrics.astro";
 import Experience from "../../components/Experience.astro";
 import Education from "../../components/Education.astro";
 import Skills from "../../components/Skills.astro";
@@ -25,7 +26,8 @@ const labels = {
     skills: "Compétences",
     languages: "Langues",
     interests: "Loisirs",
-    title: `CV - ${data.basics.name}`,
+    title: `CV — ${data.basics.name}`,
+    thanks: "Merci pour votre lecture.",
   },
   en: {
     experience: "Experience",
@@ -34,7 +36,8 @@ const labels = {
     skills: "Skills",
     languages: "Languages",
     interests: "Interests",
-    title: `CV - ${data.basics.name}`,
+    title: `CV — ${data.basics.name}`,
+    thanks: "Thanks for reading.",
   },
 };
 
@@ -43,22 +46,107 @@ const t = labels[lang as keyof typeof labels];
 
 <Layout title={t.title} lang={lang}>
   <Header lang={lang} />
+
   <main>
-    <Basics basics={data.basics} />
+    <!-- WHO + boot header -->
+    <Basics basics={data.basics} lang={lang} />
+
+    <!-- Metrics dashboard -->
+    <Metrics lang={lang} />
+
+    <!-- Experience -->
     <Experience work={data.work} title={t.experience} lang={lang} />
+
+    <!-- Projects -->
     <Projects projects={data.projects} title={t.projects} lang={lang} />
-    <Education education={data.education} title={t.education} />
-    <Skills skills={data.skills} title={t.skills} lang={lang} />
-    <Languages languages={data.languages} title={t.languages} />
-    <Interests interests={data.interests} title={t.interests} />
+
+    <!-- Two-column: Education + Languages | Skills + Interests -->
+    <div class="bottom-grid">
+      <div class="bottom-left">
+        <Education education={data.education} title={t.education} />
+        <Languages languages={data.languages} title={t.languages} lang={lang} />
+      </div>
+      <div class="bottom-right">
+        <Skills
+          skills={data.skills}
+          skillGroups={(data as any).skillGroups}
+          title={t.skills}
+          lang={lang}
+        />
+        <Interests interests={data.interests} title={t.interests} />
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-prompt">
+        <span class="arrow">➜</span>
+        <span class="path">~/cv</span>
+        <span class="cmd">echo "{t.thanks}"</span>
+      </div>
+      <div class="footer-output">
+        {t.thanks}
+        <span class="term-cursor cursor-block"></span>
+      </div>
+    </footer>
   </main>
 </Layout>
 
 <style>
   main {
-    max-width: 900px;
+    max-width: 980px;
     margin: 0 auto;
-    padding: var(--spacing-xl) var(--spacing-md);
+    padding: 32px 28px 80px;
+  }
+
+  .bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 16px;
+  }
+
+  footer {
+    margin-top: 60px;
+    border-top: 1px dashed var(--t-border);
+    padding-top: 16px;
+  }
+
+  .footer-prompt {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+  }
+
+  .arrow { color: var(--t-green); font-weight: 600; }
+  .path { color: var(--t-cyan); }
+  .cmd { color: var(--t-ink); font-weight: 500; }
+
+  .footer-output {
+    color: var(--t-ink);
+    margin-top: 6px;
+    font-style: italic;
+    font-size: 14px;
+  }
+
+  .cursor-block {
+    display: inline-block;
+    width: 8px;
+    height: 16px;
+    background: var(--t-green);
+    margin-left: 6px;
+    vertical-align: text-bottom;
+  }
+
+  @media (max-width: 640px) {
+    main {
+      padding: 20px 16px 60px;
+    }
+
+    .bottom-grid {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
   }
 
   @media print {
@@ -66,5 +154,16 @@ const t = labels[lang as keyof typeof labels];
       padding: 0;
       max-width: none;
     }
+
+    .bottom-grid {
+      gap: 24px;
+    }
+
+    footer {
+      margin-top: 24px;
+    }
+
+    .footer-prompt { display: none; }
+    .cursor-block { display: none; }
   }
 </style>

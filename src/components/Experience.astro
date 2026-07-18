@@ -2,76 +2,81 @@
 import Section from "./Section.astro";
 
 interface Props {
-  work: any;
+  work: any[];
   title: string;
   lang: string;
 }
 
 const { work, title, lang } = Astro.props;
+const isFr = lang === "fr";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 function formatDate(dateStr: string) {
-  if (!dateStr) return "";
-  const date = new Date(dateStr);
-  const month = date.toLocaleString("fr-FR", { month: "short" });
-  const year = date.getFullYear();
-  // Capitalize first letter of month and add dot if it's short
-  const formattedMonth =
-    month.charAt(0).toUpperCase() +
-    month.slice(1) +
-    (month.length <= 3 ? "." : "");
-  return `${formattedMonth} ${year}`;
+  if (!dateStr) return isFr ? "Présent" : "Present";
+  const [year, month] = dateStr.split("-");
+  if (!month) return year;
+  const date = new Date(parseInt(year), parseInt(month) - 1);
+  const monthStr = date.toLocaleString(isFr ? "fr-FR" : "en-US", { month: "short" });
+  const formatted = monthStr.charAt(0).toUpperCase() + monthStr.slice(1);
+  return `${formatted}. ${year}`;
+}
+
+function toSlug(name: string) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 ---
 
-<Section title={title}>
+<Section
+  title={title}
+  cmd="git log --author=gery --since=2016"
+  count={work.length}
+>
   <div class="work-list">
-    {
-      work.map((job: any) => (
-        <div class="job">
-          <div class="header">
-            <div class="left">
-              <div class="title-group">
-                {job.logo && (
-                  <img
-                    src={job.logo}
-                    alt={`${job.name} logo`}
-                    class="company-logo"
-                  />
-                )}
-                <h3>{job.name}</h3>
-              </div>
-              <span class="position">{job.position}</span>
-            </div>
-            <div class="date">
-              {formatDate(job.startDate)} —{" "}
-              {job.endDate
-                ? formatDate(job.endDate)
-                : title === "Expérience"
-                  ? "Présent"
-                  : "Present"}
-            </div>
+    {work.map((job: any) => {
+      const isCurrent = !job.endDate;
+      const slug = toSlug(job.name);
+      const commitHash = `${slug}.${job.startDate?.replace(/-/g, "") || ""}`;
+      const startFmt = formatDate(job.startDate);
+      const endFmt = job.endDate ? formatDate(job.endDate) : (isFr ? "Présent" : "Present");
+
+      return (
+        <article class="job">
+          <span class:list={["job-dot", { current: isCurrent }]} />
+          <div class="commit-line">
+            commit {commitHash} —{" "}
+            <span class:list={["date-range", { "date-current": isCurrent }]}>
+              {startFmt} → {endFmt}
+            </span>
           </div>
+          <h3 class="job-title">
+            {job.logo && (
+              <img src={job.logo} alt={job.name} class="company-logo" />
+            )}
+            {job.name}
+            <span class="sep"> / </span>
+            <span class="position">{job.position}</span>
+          </h3>
           <p class="summary">{job.summary}</p>
-          {job.highlights && (
+          {job.highlights && job.highlights.length > 0 && (
             <ul class="highlights">
-              {job.highlights.map((highlight: string) => (
-                <li>{highlight}</li>
+              {job.highlights.map((h: string) => (
+                <li>
+                  <span class="bullet">▸</span>
+                  <span>{h}</span>
+                </li>
               ))}
             </ul>
           )}
-          {job.technologies && (
-            <div class="tech-stack">
+          {job.technologies && job.technologies.length > 0 && (
+            <div class="stack">
               {job.technologies.map((tech: string) => (
-                <a href={`${base}/${lang}/skills?skill=${tech}`} class="tech">
-                  {tech}
-                </a>
+                <a href={`${base}/${lang}/skills?skill=${tech}`} class="tech-tag">{tech}</a>
               ))}
             </div>
           )}
-        </div>
-      ))
-    }
+        </article>
+      );
+    })}
   </div>
 </Section>
 
@@ -79,123 +84,143 @@ function formatDate(dateStr: string) {
   .work-list {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-xl);
+    gap: 28px;
   }
 
   .job {
     position: relative;
-    padding-left: var(--spacing-lg);
-    border-left: 2px solid var(--color-border);
+    padding-left: 22px;
+    border-left: 2px solid var(--t-border);
   }
 
-  .job::before {
-    content: "";
+  .job-dot {
     position: absolute;
-    left: -5px;
-    top: 0;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--color-primary);
-    box-shadow: 0 0 0 4px var(--color-bg);
+    left: -7px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    background: var(--t-faint);
+    border: 2px solid var(--t-bg);
   }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: var(--spacing-sm);
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
+  .job-dot.current {
+    background: var(--t-green);
+    box-shadow: 0 0 8px var(--t-green);
   }
 
-  .title-group {
+  .commit-line {
+    font-size: 11px;
+    color: var(--t-dim);
+    margin-bottom: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .date-range {
+    color: var(--t-dim);
+  }
+
+  .date-current {
+    color: var(--t-green);
+  }
+
+  .job-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--t-white);
+    letter-spacing: -0.3px;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 10px;
+    flex-wrap: wrap;
   }
 
   .company-logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 4px;
+    height: 20px;
+    width: auto;
+    max-width: 80px;
     object-fit: contain;
-    background: #fff;
-    padding: 2px;
+    opacity: 0.9;
+    flex-shrink: 0;
+    vertical-align: middle;
   }
 
-  h3 {
-    font-size: 1.25rem;
-    margin: 0;
-    color: var(--color-text);
+  .sep {
+    color: var(--t-dim);
+    font-weight: 400;
   }
 
   .position {
-    color: var(--color-primary);
+    color: var(--t-green);
     font-weight: 500;
   }
 
-  .date {
-    font-family: var(--font-sans);
-    color: var(--color-text-muted);
-    font-size: 0.9rem;
-  }
-
   .summary {
-    margin-bottom: var(--spacing-md);
+    color: var(--t-ink);
+    margin-top: 6px;
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.55;
   }
 
   .highlights {
-    margin: 0 0 var(--spacing-md) 0;
-    padding-left: 1.2rem;
-    color: var(--color-text-muted);
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
   }
 
   .highlights li {
-    margin-bottom: 0.25rem;
+    display: flex;
+    gap: 10px;
+    color: var(--t-ink);
+    font-size: 13px;
+    line-height: 1.55;
   }
 
-  .tech-stack {
+  .bullet {
+    color: var(--t-green);
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  .stack {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 6px;
+    margin-top: 12px;
   }
 
-  .tech {
-    font-size: 0.75rem;
-    padding: 0.125rem 0.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
-    color: var(--color-text-muted);
-    text-decoration: none;
-    transition: all 0.2s;
+  .tech-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    color: var(--t-green);
+    background: var(--t-green-dim);
+    border: 1px solid var(--t-green-dim);
   }
 
-  .tech:hover {
-    background: rgba(56, 189, 248, 0.1);
-    color: var(--color-primary);
+  .tech-tag:hover {
+    border-color: var(--t-green);
   }
 
   @media print {
     .job {
       border-left: none;
       padding-left: 0;
-      margin-bottom: var(--spacing-lg);
       page-break-inside: avoid;
     }
 
-    .job::before {
-      display: none;
-    }
+    .job-dot { display: none; }
+    .commit-line { display: none; }
 
-    h3 {
-      color: var(--color-text);
-    }
+    .job-title { font-size: 14px; }
+    .highlights li { font-size: 12px; }
 
-    .tech {
-      border: 1px solid var(--color-border);
+    .tech-tag {
       background: transparent;
-      color: var(--color-text);
+      border: 1px solid var(--t-border);
+      color: var(--t-dim);
     }
   }
 </style>
